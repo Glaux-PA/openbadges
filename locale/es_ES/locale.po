@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-09T11:05:35+00:00\n"
+"PO-Revision-Date: 2024-04-09 15:32+0000\n"
+"Last-Translator: PublicacionesAcademicas <info@publicacionesacademicas.es>\n"
+"Language-Team: Spanish <http://translate.pkp.sfu.ca/projects/ojs/"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: \n"
+
+msgid "plugins.generic.openbadges.displayName"
+msgstr "Insignias Ciencia Abierta"
+
+msgid "plugins.generic.openbadges.description"
+msgstr "Plugin para mostrar las insignias de ciencia abierta"
+
+msgid "plugins.generic.openbadges.settings"
+msgstr "Configuración"
+
+msgid "plugins.generic.openbadges.instructions"
+msgstr "Seleccionar la insignia a aplicar"
+
+msgid "plugins.generic.openbadges.tabName"
+msgstr "Insignias"
+
+msgid "plugins.generic.openbadges.badge1name"
+msgstr "Datos Abiertos"
+
+msgid "plugins.generic.openbadges.badge1description"
+msgstr "Artículos en los que sus autores compartan los datos de su investigación"
+
+msgid "plugins.generic.openbadges.badge2name"
+msgstr "Materiales Abiertos"
+
+msgid "plugins.generic.openbadges.badge2description"
+msgstr "Artículos en los que sus autores compartan materiales adicionales de la investigación"
+
+msgid "plugins.generic.openbadges.badge3name"
+msgstr "Registro"
+
+msgid "plugins.generic.openbadges.badge3description"
+msgstr "Artículos en los que sus autores hayan realizado un registro previo del diseño de su investigación o de la versión inicial de su manuscrito en un repositorio público"
+
+msgid "plugins.generic.openbadges.badge4name"
+msgstr "Revisión Transparente"
+
+msgid "plugins.generic.openbadges.badge4description"
+msgstr "Artículos en los que sus autores permitan que todo el proceso de revisión por pares sea público"
