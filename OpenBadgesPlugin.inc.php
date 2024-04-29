@@ -64,18 +64,11 @@ class OpenBadgesPlugin extends GenericPlugin
         $badges = $this->obtenerBadges();
         $smarty->assign('badges', $badges);
 
-        /*
 		$output .= sprintf(
 			'<tab id="badgesInWorkflow" label="%s">%s</tab>',
 			__('plugins.generic.openbadges.tabName'),
 			$smarty->fetch($this->getTemplateResource('badgesform.tpl'))
-		);
-        */
-        $output .= sprintf(
-			'<tab id="badgesInWorkflow" label="%s">%s</tab>',
-			'ola',
-			$smarty->fetch($this->getTemplateResource('badgesform.tpl'))
-		);
+		);        
 
 		return false;
 	}    
