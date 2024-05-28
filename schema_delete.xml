@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema SYSTEM "../../../lib/pkp/dtd/xmlSchema.dtd">
+
+<!--
+  * plugins/generic/openbadges/schema.xml
+  *
+  * Copyright (c) 2024+ glaux.es
+  *
+  * OpenBadgesPlugin DB XML schema.
+  *
+  -->
+
+<schema version="0.2">
+	<!--
+	 *
+	 * TABLE badge
+	 *
+	 -->
+	<table name="badge">
+		<field name="badge_id" type="I8">
+			<KEY/>
+			<AUTOINCREMENT/>
+		</field>
+		<field name="badge_name" type="C2" size="255">
+			<NOTNULL/>
+		</field>
+		<field name="badge_description" type="X"/>
+		<field name="badge_url" type="C2" size="255">
+			<NOTNULL/>
+		</field>
+		<field name="badge_image" type="C2" size="255">
+			<NOTNULL/>
+		</field>
+		<!--
+		<field name="submission_id" type="I8">
+			<NOTNULL/>
+		</field>
+		<field name="context_id" type="I8">
+			<NOTNULL/>
+		</field>
+		-->
+		<descr>List of badge items for each context</descr>
+	</table>
+
+	<!--
+	  *
+	  * TABLE badge_settings
+	  *
+	  -->
+	<table name="badge_settings">
+		<field name="badge_id" type="I8">
+			<NOTNULL/>
+		</field>
+		<field name="locale" type="C2" size="14">
+			<NOTNULL/>
+			<DEFAULT VALUE=""/>
+		</field>
+		<field name="setting_name" type="C2" size="255">
+			<NOTNULL/>
+		</field>
+		<field name="setting_value" type="X"/>
+		<field name="setting_type" type="C2" size="6">
+			<NOTNULL/>
+			<descr>(bool|int|float|string|object)</descr>
+		</field>
+		<descr>Funder settings.</descr>
+		<index name="badge_settings_id">
+			<col>badge_id</col>
+		</index>
+		<index name="badge_settings_pkey">
+			<col>badge_id</col>
+			<col>locale</col>
+			<col>setting_name</col>
+			<UNIQUE />
+		</index>
+	</table>	
+
+	<!--
+	 *
+	 * TABLE badge_submission
+	 *
+	 -->
+	<table name="badge_submission">
+		<field name="badge_submission_id" type="I8">
+			<KEY/>
+			<AUTOINCREMENT/>
+		</field>
+		<field name="badge_id" type="I8">
+			<NOTNULL/>
+		</field>
+		<field name="submission_id" type="I8">
+			<NOTNULL/>
+		</field>		
+		<field name="badge_status" type="L">
+			<NOTNULL/>
+		</field>
+		<descr>List of badge_submission items for each funder</descr>
+	</table>
+
+	<!--
+	  *
+	  * TABLE badge_submission_settings
+	  *
+	  -->
+	<table name="badge_submission_settings">
+		<field name="badge_submission_id" type="I8">
+			<NOTNULL/>
+		</field>
+		<field name="locale" type="C2" size="14">
+			<NOTNULL/>
+			<DEFAULT VALUE=""/>
+		</field>
+		<field name="setting_name" type="C2" size="255">
+			<NOTNULL/>
+		</field>
+		<field name="setting_value" type="X"/>
+		<field name="setting_type" type="C2" size="6">
+			<NOTNULL/>
+			<descr>(bool|int|float|string|object)</descr>
+		</field>
+		<descr>Badge_submission settings.</descr>
+		<index name="badge_submission_settings_id">
+			<col>badge_submission_id</col>
+		</index>
+		<index name="badge_submission_settings_pkey">
+			<col>badge_submission_id</col>
+			<col>locale</col>
+			<col>setting_name</col>
+			<UNIQUE />
+		</index>
+	</table>
+
+</schema>

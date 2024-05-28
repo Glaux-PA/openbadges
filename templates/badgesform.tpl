@@ -7,13 +7,12 @@
  * Badges form for Insignias Ciencia Abierta plugin.
  *}
 
-<!DOCTYPE html>
-<html lang="es">
+
+
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Insignias</title>
-    <style>
+
+    <style type="text/css">
         /* Estilos para el contenedor principal */
         .badge-container {
             display: flex; /* Usa flexbox para crear un layout de dos columnas */
@@ -47,13 +46,19 @@
                 <div class="badge-details">
                     <h3>{$badge.title}</h3>
                     <p>{$badge.description}</p>
-                    <label for="url_{$smarty.foreach.foreach.index}">URL:</label>
-                    <input type="url" name="badges[{$smarty.foreach.foreach.index}][url]" value="{$badge.url}">
-                    <label for="active_{$smarty.foreach.foreach.index}">Activar:</label>
-                    <input type="checkbox" name="badges[{$smarty.foreach.foreach.index}][isActive]" id="active_{$smarty.foreach.foreach.index}" {if $badge.isActive}checked{/if}>
-                    <input type="hidden" name="badges[{$smarty.foreach.foreach.index}][title]" value="{$badge.title}">
-                    <input type="hidden" name="badges[{$smarty.foreach.foreach.index}][description]" value="{$badge.description}">
-                    <input type="hidden" name="badges[{$smarty.foreach.foreach.index}][image]" value="{$badge.image}">
+                    <p>{$badge.id}</p>
+                    <p>{$badge.badgeSubmissionID}</p>
+                    <p>Activo:</p>
+                    <p>{$badge.isActive}</p>
+                    <label for="url_{$badge.badgeSubmissionID}">URL:</label>
+                    <input type="url" name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
+                    <label for="active_{$badge.badgeSubmissionID}">Activar:</label>
+                    {assign var="isActive" value=$badge.isActive|default:false}
+                    <input type="checkbox" name="badges[{$badge.badgeSubmissionID}][isActive]" id="active_{$badge.badgeSubmissionID}" {if $isActive == true || $isActive == 'true' || $isActive === 1 || $isActive === '1'}checked{/if}>
+                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][title]" value="{$badge.title}">
+                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][description]" value="{$badge.description}">
+                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][image]" value="{$badge.image}">
+                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][badgeSubmissionID]" value="{$badge.badgeSubmissionID}">
                 </div>
             </div>
         {/foreach}
@@ -67,7 +72,6 @@
 
     </form>
 </body>
-</html>
 
 
 

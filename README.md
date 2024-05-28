@@ -17,7 +17,20 @@ También se puede ver cómo funcionan en una editorial académica importante su 
 
 
 
-## Las insignias pueden ser de 3 tipos:
+## Las insignias pueden ser de 4 tipos:
 * Open Data (The Open Data badge is awarded when digitally-shareable data necessary to reproduce the reported results are publicly available)
 * Open Materials (The Open Materials badge is earned by making publicly available the components of the research methodology needed to reproduce the reported procedure and analysis)
 * Open Analytic Code (The Open Analytic Code badge is earned by making publicly available the analytical code needed to reproduce the reported analyses)
+
+
+### Documentación para desarrollo:
+* https://github.com/pkp/staticPages/tree/main
+
+
+
+### Pendiente:
+* Ventana de settings para modificar las insignias
+* Implementación/Control de idiomas
+* Seguridad
+* Permitir subir/cambiar imagen
+* Ventana de confirmación para eliminar registros cuando se desactiva el módulo

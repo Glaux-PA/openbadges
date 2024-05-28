@@ -2,30 +2,48 @@
 
 import('lib.pkp.classes.plugins.GenericPlugin');
 
+require_once('BadgesSchemaMigration.inc.php');
 
-class OpenBadgesPlugin extends GenericPlugin
-{
+class OpenBadgesPlugin extends GenericPlugin {
     
-    public function register($category, $path, $mainContextId = NULL)
-    {
+    public function register($category, $path, $mainContextId = NULL) {
         // Register the plugin even when it is not enabled
-        $success = parent::register($category, $path, $mainContextId);
+        #$success = parent::register($category, $path, $mainContextId);
+
+        if (parent::register($category, $path, $mainContextId)) {
+        #if ($success && $this->getEnabled($mainContextId)) {
+            if ($this->getEnabled($mainContextId)) {
 
 
-        if ($success && $this->getEnabled($mainContextId)) {
+                #import('plugins.generic.openbadges.classes.BadgeDAO');
+                #$badgeDao = new BadgeDAO();
+                #DAORegistry::registerDAO('BadgeDAO', $badgeDao);
 
-            // Use a hook to extend the context entity's schema
-            #HookRegistry::register('Schema::get::context', array($this, 'addToSchema'));
+                $this->install();
+                $this->inicializarBadges();
+                #$this->getInstallMigration();
 
-            HookRegistry::register('LoadComponentHandler', array($this, 'setupBadgesHandler'));
+                #import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
+                #$badgeSubmissionDAO = new BadgeSubmissionDAO();
+                #DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDAO);
+
+                // Use a hook to extend the context entity's schema
+                #HookRegistry::register('Schema::get::context', array($this, 'addToSchema'));
+
+                HookRegistry::register('LoadComponentHandler', array($this, 'setupBadgesHandler'));
+
+                //Submission/publication form
+                HookRegistry::register('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
+                // Frontend
+                HookRegistry::register('Templates::Article::Details', array($this, 'addSubmissionDisplay'));
 
 
-            HookRegistry::register('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
-
-
+            } else {
+                #$this->uninstall();
+            }
+            return true;
         }
-
-        return $success;
+        return false;
     } 
     
 
@@ -57,11 +75,8 @@ class OpenBadgesPlugin extends GenericPlugin
 			'submissionId' => $submission->getId(),
 		]);
 
-
-        // Asigna la función como una variable Smarty
-        #$smarty->assign('changeHandler', 'changeHandler');
-
-        $badges = $this->obtenerBadges();
+        //Recuperamos las insignias para esta publicacion
+        $badges = $this->obtenerBadges($submission->getId());
         $smarty->assign('badges', $badges);
 
 		$output .= sprintf(
@@ -72,6 +87,35 @@ class OpenBadgesPlugin extends GenericPlugin
 
 		return false;
 	}    
+
+
+	/**
+	* Hook to Templates::Article::Details and Templates::Catalog::Book::Details and list funder information
+	* @param $hookName string
+	* @param $params array
+	*/
+	function addSubmissionDisplay($hookName, $params) {
+
+        $templateMgr = $params[1];
+		$output =& $params[2];
+		#$submission = $smarty->get_template_vars('submission');
+        #$submission = $this->getSubmissionOfApplication($templateMgr);
+        $submission = $templateMgr->get_template_vars('article');
+		/*
+        $smarty->assign([
+			'submissionId' => $submission->getId(),
+		]);
+        */
+
+        //Recuperamos las insignias para esta publicacion
+        $badges = $this->obtenerBadges($submission->getId());
+        $templateMgr->assign('badges', $badges);
+        $output .= $templateMgr->fetch($this->getTemplateResource('block.tpl'));
+
+		return false;
+
+	}
+
 
 
 
@@ -98,49 +142,127 @@ class OpenBadgesPlugin extends GenericPlugin
     }
 
 
-    function obtenerBadges() {
+    function obtenerBadges($submissionID) {
 
         $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
 
-        return [
-            [   
-                'id' => 1,
-                'title' => __('plugins.generic.openbadges.badge1name'),
-                'description' => __('plugins.generic.openbadges.badge1description'),
-                'image' => $pluginUrl . '/images/data_large_color.png',
-                'url' => 'https://ejemplo.com/badge2',
-                'isActive' => false
-            ],
-            [
-                'id' => 2,
-                'title' => __('plugins.generic.openbadges.badge2name'),
-                'description' => __('plugins.generic.openbadges.badge2description'),
-                'image' => $pluginUrl . '/images/materials_large_color.png',
-                'url' => 'https://ejemplo.com/badge2',
-                'isActive' => false
-            ],
-            [
-                'id' => 3,
-                'title' => __('plugins.generic.openbadges.badge3name'),
-                'description' => __('plugins.generic.openbadges.badge3description'),
-                'image' => $pluginUrl . '/images/preregistered_large_color.png',
-                'url' => 'https://ejemplo.com/badge3',
-                'isActive' => false
-            ],
-            [
-                'id' => 4,
-                'title' => __('plugins.generic.openbadges.badge4name'),
-                'description' => __('plugins.generic.openbadges.badge4description'),
-                'image' => $pluginUrl . '/images/data_large_color_pa.png',
-                'url' => 'https://ejemplo.com/badge3',
-                'isActive' => false
-            ],
-        ];
+        
+        
+        import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
+        $badgeSubmissionDao = new BadgeSubmissionDAO();
+        DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
+        import('plugins.generic.openbadges.classes.BadgeSubmission');
+
+        
+        $badgeDAO = new BadgeDAO();
+        $badges = $badgeDAO->getAll();
+        #error_log($badges[0]->getId());
+        $result = [];
+        while ($badge = $badges->next()) {
+            #error_log("Dentro del foreach de BADGES - BadgeID: ".$badge->getId());
+
+            // Procesar cada badge
+            $badgeSubmission = new BadgeSubmission();
+            if($badgeSubmissionDao->existSubmisionBadge($submissionID, $badge->getId()) == false){
+                
+                $badgeSubmission->setBadgeId($badge->getId());
+                $badgeSubmission->setSubmissionId($submissionID);
+                $badgeSubmission->setBadgeUrl("http://pruebas.glaux.es#");
+                $badgeSubmission->setStatus(false);
+                $badgeSubmissionDao->insertObject($badgeSubmission);
+            }else{
+                $badgeSubmission = $badgeSubmissionDao->getBySubmissionAndBadgeId($submissionID, $badge->getId());
+                error_log("badgeSubmission->getStatus(): ".$badgeSubmission->getStatus());
+            }
+            $result[] = [
+                'id' => $badge->getId(),
+                'title' => $badge->getBadgeName(),
+                'description' => $badge->getBadgeDescription(),
+                'image' => $badge->getBadgeImage(),
+                'url' => $badgeSubmission->getBadgeUrl(),
+                'isActive' => $badgeSubmission->getStatus(),                
+                'submissionID' => $badgeSubmission->getSubmissionId(),
+                'badgeSubmissionID' => $badgeSubmission->getId()
+            ];
+
+        }
+        
+        return $result;
+    }
+
+
+    function inicializarBadges(){
+
+        $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
+        import('plugins.generic.openbadges.classes.BadgeDAO');
+        $badgeDao = new BadgeDAO();
+        DAORegistry::registerDAO('BadgeDAO', $badgeDao);
+        import('plugins.generic.openbadges.classes.Badge');
+
+        #Datos Abiertos
+        if($badgeDao->getByName(__('plugins.generic.openbadges.badge1name')) === null){
+            $badge = new Badge();
+            $badge->setBadgeName(__('plugins.generic.openbadges.badge1name'));
+            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge1description'));
+            $badge->setBadgeimage($pluginUrl . '/images/data_large_color.png');
+            $badgeDao->insertObject($badge);
+        }
+
+        #Materiales Abiertos
+        if($badgeDao->getByName(__('plugins.generic.openbadges.badge2name')) === null){
+            $badge = new Badge();
+            $badge->setBadgeName( __('plugins.generic.openbadges.badge2name'));
+            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge2description'));
+            $badge->setBadgeimage($pluginUrl . '/images/materials_large_color.png');
+            $badgeDao->insertObject($badge);
+        }
+        
+        #Registro
+        if($badgeDao->getByName(__('plugins.generic.openbadges.badge3name')) === null){
+            $badge = new Badge();
+            $badge->setBadgeName( __('plugins.generic.openbadges.badge3name'));
+            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge3description'));
+            $badge->setBadgeimage($pluginUrl . '/images/preregistered_large_color.png');
+            $badgeDao->insertObject($badge);
+        }
+
+        #Revisión Transparente
+        if($badgeDao->getByName(__('plugins.generic.openbadges.badge4name')) === null){
+            $badge = new Badge();
+            $badge->setBadgeName( __('plugins.generic.openbadges.badge4name'));
+            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge4description'));
+            $badge->setBadgeimage($pluginUrl . '/images/data_large_color_pa.png');
+            $badgeDao->insertObject($badge);
+        }
+
     }
 
 
 
 
+
+
+    function install() {
+        $this->getInstallMigration()->up();
+    }
+
+	/**
+	 * @copydoc Plugin::getInstallMigration()
+	 */
+	function getInstallMigration() {
+		#$this->import('BadgesSchemaMigration');
+		return new BadgesSchemaMigration();
+	}
+
+    /*
+    function updateSchema($hookName, $args) {
+        $this->getInstallMigration()->up();
+    }
+    */
+
+    public function uninstall() {
+        $this->getInstallMigration()->down();
+    }
 
 
 
