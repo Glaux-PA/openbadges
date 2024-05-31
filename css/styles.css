@@ -19,7 +19,7 @@
 
 /* Estilos para la columna de los detalles */
 .pkp_form .badge-container .badge-details .badge-url {
-    display: flex !important; 
+    display: flex !important;
     width: 100%;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .pkp_form .badge-container .badge-details .badge-status {
-    display: flex !important; 
+    display: flex !important;
     flex-direction: row-reverse;
     justify-content: flex-end;
     margin-top: .5rem;

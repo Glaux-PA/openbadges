@@ -7,12 +7,10 @@
  * Badges form for Insignias Ciencia Abierta plugin.
  *}
 
- {load_stylesheet key="badgeStyles"}
-    
-    {capture assign=actionUrl}{url router=$smarty.const.ROUTE_COMPONENT component="plugins.generic.openbadges.controllers.OpenBadgesHandler" op="updateBadges" submissionId=$submissionId escape=false}{/capture}
+{capture assign=actionUrl}{url router=$smarty.const.ROUTE_COMPONENT component="plugins.generic.openbadges.controllers.OpenBadgesHandler" op="updateBadges" submissionId=$submissionId escape=false}{/capture}
 
-    <div class="pkpFormGroup">
-    <form class="pkp_form" method="post" id="badgesForm" action="{$actionUrl}">    
+<div class="pkpFormGroup">
+    <form class="pkp_form" method="post" id="badgesForm" action="{$actionUrl}">
         {foreach from=$badges item=badge}
             <div class="badge-container">
                 <div class="badge-image">
@@ -21,8 +19,6 @@
                 <div class="badge-details">
                     <h3>{$badge.title}</h3>
                     <p>{$badge.description}</p>
-                    <p>Activo</p>
-                    <p>{$badge.isActive}</p>
                     <div class="badge-url">
                         <label for="url_{$badge.badgeSubmissionID}">URL:</label>
                         <input type="url" name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
@@ -30,26 +26,24 @@
                     <div class="badge-status">
                         <label for="active_{$badge.badgeSubmissionID}">Activar:</label>
                         {assign var="isActive" value=$badge.isActive|default:false}
-                        <input type="checkbox" name="badges[{$badge.badgeSubmissionID}][isActive]" id="active_{$badge.badgeSubmissionID}" {if $isActive == true || $isActive == 'true' || $isActive === 1 || $isActive === '1'}checked{/if}>
+                        <input type="checkbox" name="badges[{$badge.badgeSubmissionID}][isActive]"
+                            id="active_{$badge.badgeSubmissionID}"
+                            {if $isActive == true || $isActive == 'true' || $isActive === 1 || $isActive === '1'}checked{/if}>
                     </div>
                     <input type="hidden" name="badges[{$badge.badgeSubmissionID}][title]" value="{$badge.title}">
-                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][description]" value="{$badge.description}">
+                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][description]"
+                        value="{$badge.description}">
                     <input type="hidden" name="badges[{$badge.badgeSubmissionID}][image]" value="{$badge.image}">
-                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][badgeSubmissionID]" value="{$badge.badgeSubmissionID}">
+                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][badgeSubmissionID]"
+                        value="{$badge.badgeSubmissionID}">
                 </div>
             </div>
         {/foreach}
 
         {fbvFormSection class="formButtons"}
-            {assign var=buttonId value="submitFormButton"|concat:"-"|uniqid}
-            {fbvElement type="submit" class="submitFormButton" id=$buttonId label="common.save"}
+        {assign var=buttonId value="submitFormButton"|concat:"-"|uniqid}
+        {fbvElement type="submit" class="submitFormButton" id=$buttonId label="common.save"}
         {/fbvFormSection}
 
     </form>
-    </div>
-
-
-
-
-
-
+</div>
