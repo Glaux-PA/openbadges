@@ -10,6 +10,10 @@
     padding-left: 0;
 }
 
+.pkp_form .pkpFormPage__footer {
+    border-top: 0;
+}
+
 /* Estilos para la columna de la imagen */
 .pkp_form .badge-container .badge-image {
     margin-right: 2rem; /* Añade un margen entre la imagen y los otros campos */
@@ -44,4 +48,5 @@
     font-size: 1rem;
     line-height: 1.2em;
     margin-bottom: .5rem;
+    margin-top: 0;
 }
