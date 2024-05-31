@@ -1,0 +1,53 @@
+/* Estilos para el contenedor principal */
+.pkp_form .badge-container {
+    display: flex; /* Usa flexbox para crear un layout de dos columnas */
+    align-items: center; /* Centra verticalmente los elementos */
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.pkp_form .badge-container:not(:last-child) {
+    margin-bottom: 1rem; /* Espacio adicional entre los contenedores */
+    border-bottom: 0;
+}
+
+/* Estilos para la columna de la imagen */
+.pkp_form .badge-container .badge-image {
+    margin-right: 1rem; /* Añade un margen entre la imagen y los otros campos */
+}
+
+/* Estilos para la columna de los detalles */
+.pkp_form .badge-container .badge-details .badge-url {
+    display: flex !important; 
+    width: 100%;
+}
+
+.pkp_form .badge-container .badge-details .badge-url label {
+    width: 15%;
+}
+
+.pkp_form .badge-container .badge-details .badge-url input {
+    width: 85%;
+}
+
+.pkp_form .badge-container .badge-details .badge-status {
+    display: flex !important; 
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    margin-top: .5rem;
+}
+
+.pkp_form .badge-container .badge-details .badge-status label {
+    margin-left: .25rem;
+}
+
+.pkp_form .badge-container .badge-details p {
+    font-size: .875rem;
+    line-height: 1.2em;
+}
+
+.pkp_form .badge-container .badge-details h3 {
+    font-size: 1.15rem;
+    line-height: 1.2em;
+}

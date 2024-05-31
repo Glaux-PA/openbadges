@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @file plugins/generic/openbadges/controllers/OpenBadgesHandler.inc.php
+ *
+ * Copyright (c) 2024+ glaux.es
+ *
+ * @class OpenBadgesHandler
+ * @ingroup plugins_generic_openbadges
+ *
+ * @brief Handle Badge form requests.
+ */
 
 import('lib.pkp.classes.handler.PKPHandler');
 
@@ -16,6 +26,7 @@ class OpenBadgesHandler extends Handler{
 	
 	function __construct() {
 		parent::__construct();
+		//TODO ADD secutity
 		/*
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_AUTHOR),
@@ -51,6 +62,7 @@ class OpenBadgesHandler extends Handler{
 	// Overridden template methods
 	//
 
+	//TODO ADD secutity
 	/**
 	 * @copydoc PKPHandler::authorize()
 	 */
@@ -75,9 +87,6 @@ class OpenBadgesHandler extends Handler{
 
 		$submissionDAO = DAORegistry::getDAO('SubmissionDAO');
 		$submission = $submissionDAO->getById($submissionId);
-
-
-		// Obtener una instancia del DAO de publicaciones
 		$publicationDao = DAORegistry::getDAO('PublicationDAO');
 		$publication = $publicationDao->getById($submission->getCurrentPublication()->getId());
 
@@ -88,39 +97,56 @@ class OpenBadgesHandler extends Handler{
         DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
         import('plugins.generic.openbadges.classes.BadgeSubmission');
 
-
 		foreach ($badges as $badge) {
 			$badgeSubmission = new BadgeSubmission();
 			$badgeSubmissionID = (int) $badge['badgeSubmissionID'];
 			$badgeSubmission = $badgeSubmissionDao->getById($badgeSubmissionID);
 			$badgeSubmission->setBadgeUrl($badge['url']);
-			$isActive = (bool)$badge['isActive'];
+			$isActive = isset($badge['isActive']) ? (bool)$badge['isActive'] : false;
 			$badgeSubmission->setStatus($isActive);
 			$badgeSubmissionDao->updateObject($badgeSubmission);
 		}
 
 
-      // Redirige a una página de éxito o vuelve al formulario
-	  $dispatcher = $request->getDispatcher();
-	  #$dispatcher->handleRedirect();
+      	// TODO Redirige a una página de éxito o vuelve al formulario
+	  	#$dispatcher = $request->getDispatcher();
+	  	#$dispatcher->handleRedirect();
+    	#$dispatcher->handleRedirect(null, null, "submissions/$submissionId"); // Ajusta esta línea según tu ruta de formulario
+
+		$templateMgr = TemplateManager::getManager($request);
+		#$templateMgr->display(self::$plugin->getTemplateResource('badgesform.tpl'));
+		#$output =& $args[1];
+		#$output .= $templateMgr->fetch(self::$plugin->getTemplateResource('badgesform.tpl'));
+
+
+		// Redirigir de vuelta al formulario
+		#$dispatcher = $request->getDispatcher();
+		#$dispatcher->handleRedirect();
+
+		#$this->setupTemplate($request);
+        #$dispatcher = $request->getDispatcher();
+        #$dispatcher->handleRedirect();
+
+		// Redirigir de vuelta al formulario
+		$router = $request->getRouter();
+		#$url = $router->url($request, null, 'OpenBadgesPlugin', 'addToPublicationForms', null, array('submissionId' => $submissionId));
+		#$url = $router->url($request, null, 'workflow', 'index', $submissionId);
+		#$url = $router->url($request, null, 'workflow', 'index', null, array('submissionId' => $submissionId , '1'));
+		#$dispatcher = $request->getDispatcher();
+		#$url = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'index', array($submissionId, '1'));
+
+		#return $request->redirectUrlJson($url);
+
+
+		$router = $request->getRouter();
+        $url = $router->url($request, null, 'workflow', 'index', array($submissionId, '1'));
+        
+        // Realizar la redirección completa
+        return $request->redirectUrl($url);
+
+
 
 	  return true;
     }
-
-    /**
-     * Maneja la carga del formulario.
-     */
-    public function tuMetodoManejadorDelFormulario($args, $request) {
-        // Lógica para cargar y mostrar el formulario
-        // Recupera los datos necesarios y asigna a la plantilla
-        $templateMgr = TemplateManager::getManager($request);
-        // Cargar datos para el formulario...
-
-        // Asigna los datos a la plantilla
-        $templateMgr->display('ruta/a/badgesform.tpl');
-    }
-
-
-
 
 }

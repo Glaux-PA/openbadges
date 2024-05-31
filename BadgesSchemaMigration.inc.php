@@ -9,20 +9,17 @@
  * @brief Describe database table structures.
  */
 
-
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-
 class BadgesSchemaMigration extends Migration {
+
         /**
          * Run the migrations.
          * @return void
          */
-		
         public function up() {
 			if (!Capsule::schema()->hasTable('badge')) {
 				# badge
@@ -32,7 +29,6 @@ class BadgesSchemaMigration extends Migration {
 					$table->longText('badge_description');
 					$table->string('badge_image', 255);
 				});
-				#$this->inicializarBadges();
 			}
 			if (!Capsule::schema()->hasTable('badge_settings')) {
 				// badge_settings
@@ -71,64 +67,6 @@ class BadgesSchemaMigration extends Migration {
 			
 		}
 
-		function inicializarBadges(){
-
-			import('plugins.generic.openbadges.classes.BadgeDAO');
-			$badgeDao = new BadgeDAO();
-			DAORegistry::registerDAO('BadgeDAO', $badgeDao);
-			import('plugins.generic.openbadges.classes.Badge');
-			$badge = new Badge();
-			$badge->setBadgeName( __('plugins.generic.openbadges.badge1name'));
-			$badge->setBadgeDescription(__('plugins.generic.openbadges.badge1description'));
-			$badge->setBadgeimage('/images/data_large_color.png');
-			$badgeDao->insertObject($badge);
-
-			/*
-			function obtenerBadges() {
-
-				$pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
-		
-				return [
-					[   
-						'id' => 1,
-						'title' => __('plugins.generic.openbadges.badge1name'),
-						'description' => __('plugins.generic.openbadges.badge1description'),
-						'image' => $pluginUrl . '/images/data_large_color.png',
-						'url' => 'https://ejemplo.com/badge2',
-						'isActive' => false
-					],
-					[
-						'id' => 2,
-						'title' => __('plugins.generic.openbadges.badge2name'),
-						'description' => __('plugins.generic.openbadges.badge2description'),
-						'image' => $pluginUrl . '/images/materials_large_color.png',
-						'url' => 'https://ejemplo.com/badge2',
-						'isActive' => false
-					],
-					[
-						'id' => 3,
-						'title' => __('plugins.generic.openbadges.badge3name'),
-						'description' => __('plugins.generic.openbadges.badge3description'),
-						'image' => $pluginUrl . '/images/preregistered_large_color.png',
-						'url' => 'https://ejemplo.com/badge3',
-						'isActive' => false
-					],
-					[
-						'id' => 4,
-						'title' => __('plugins.generic.openbadges.badge4name'),
-						'description' => __('plugins.generic.openbadges.badge4description'),
-						'image' => $pluginUrl . '/images/data_large_color_pa.png',
-						'url' => 'https://ejemplo.com/badge3',
-						'isActive' => false
-					],
-				];
-			}
-			*/
-
-
-
-
-		}
 
 		public function down(): void {
 			Capsule::schema()->dropIfExists('badge');
@@ -136,6 +74,5 @@ class BadgesSchemaMigration extends Migration {
 			Capsule::schema()->dropIfExists('badge_submission');
 			Capsule::schema()->dropIfExists('badge_submission_settings');
 		}
-
 
 }

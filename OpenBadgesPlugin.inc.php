@@ -7,31 +7,37 @@ require_once('BadgesSchemaMigration.inc.php');
 class OpenBadgesPlugin extends GenericPlugin {
     
     public function register($category, $path, $mainContextId = NULL) {
-        // Register the plugin even when it is not enabled
-        #$success = parent::register($category, $path, $mainContextId);
 
         if (parent::register($category, $path, $mainContextId)) {
-        #if ($success && $this->getEnabled($mainContextId)) {
             if ($this->getEnabled($mainContextId)) {
-
-
-                #import('plugins.generic.openbadges.classes.BadgeDAO');
-                #$badgeDao = new BadgeDAO();
-                #DAORegistry::registerDAO('BadgeDAO', $badgeDao);
-
+                //TODO change this call and adapt to plugin lifecicle
                 $this->install();
                 $this->inicializarBadges();
                 #$this->getInstallMigration();
 
-                #import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
-                #$badgeSubmissionDAO = new BadgeSubmissionDAO();
-                #DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDAO);
+
+
+                $request = $this->getRequest();
+                $templateMgr = TemplateManager::getManager($request);
+                $templateMgr->addStyleSheet(
+                    'badgeStyles', 
+                    $this->getCssUrl($request).'/styles.css', 
+                    array('contexts' => 'backend')
+                );
+
+                $templateMgr->addStyleSheet(
+                    'badgeStyles', 
+                    $this->getCssUrl($request).'/styles.css', 
+                    array('contexts' => 'frontend')
+                );
+
 
                 // Use a hook to extend the context entity's schema
                 #HookRegistry::register('Schema::get::context', array($this, 'addToSchema'));
 
                 HookRegistry::register('LoadComponentHandler', array($this, 'setupBadgesHandler'));
 
+                
                 //Submission/publication form
                 HookRegistry::register('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
                 // Frontend
@@ -39,7 +45,9 @@ class OpenBadgesPlugin extends GenericPlugin {
 
 
             } else {
-                #$this->uninstall();
+                //TODO change this call and adapt to plugin lifecicle
+                // or make a alert windows that allow user to confirm the removal of badges data
+                $this->uninstall();
             }
             return true;
         }
@@ -78,6 +86,14 @@ class OpenBadgesPlugin extends GenericPlugin {
         //Recuperamos las insignias para esta publicacion
         $badges = $this->obtenerBadges($submission->getId());
         $smarty->assign('badges', $badges);
+        // Registrar el archivo CSS para que se pueda cargar en el template
+        #$templateMgr = TemplateManager::getManager($request);
+        #$templateMgr->addStylesheet('badgeStyles', $this->getPluginPath() . '/css/styles.css');
+
+
+
+
+
 
 		$output .= sprintf(
 			'<tab id="badgesInWorkflow" label="%s">%s</tab>',
@@ -98,26 +114,25 @@ class OpenBadgesPlugin extends GenericPlugin {
 
         $templateMgr = $params[1];
 		$output =& $params[2];
-		#$submission = $smarty->get_template_vars('submission');
-        #$submission = $this->getSubmissionOfApplication($templateMgr);
+
         $submission = $templateMgr->get_template_vars('article');
-		/*
-        $smarty->assign([
-			'submissionId' => $submission->getId(),
-		]);
-        */
 
         //Recuperamos las insignias para esta publicacion
         $badges = $this->obtenerBadges($submission->getId());
         $templateMgr->assign('badges', $badges);
+
+        #$templateMgr->addStylesheet('badgeStyles', $this->getPluginPath() . '/css/styles.css');
+        
+        #$templateMgr->addStyleSheet(
+        #    'badgeStyles', 'css/styles.css', 
+        #    array('contexts' => 'backend')
+        #);
+            
         $output .= $templateMgr->fetch($this->getTemplateResource('block.tpl'));
 
 		return false;
 
 	}
-
-
-
 
     /**
      * Provide a name for this plugin
@@ -142,24 +157,31 @@ class OpenBadgesPlugin extends GenericPlugin {
     }
 
 
+    /**
+	 * Get plugin CSS URL
+	 *
+	 * @return string Public plugin CSS URL
+	 */
+	function getCssUrl($request) {
+		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css';
+	}
+
+
     function obtenerBadges($submissionID) {
 
         $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
 
-        
-        
         import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
         $badgeSubmissionDao = new BadgeSubmissionDAO();
         DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
         import('plugins.generic.openbadges.classes.BadgeSubmission');
 
-        
         $badgeDAO = new BadgeDAO();
         $badges = $badgeDAO->getAll();
-        #error_log($badges[0]->getId());
+
         $result = [];
         while ($badge = $badges->next()) {
-            #error_log("Dentro del foreach de BADGES - BadgeID: ".$badge->getId());
+            #error_log("");
 
             // Procesar cada badge
             $badgeSubmission = new BadgeSubmission();
@@ -172,7 +194,7 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badgeSubmissionDao->insertObject($badgeSubmission);
             }else{
                 $badgeSubmission = $badgeSubmissionDao->getBySubmissionAndBadgeId($submissionID, $badge->getId());
-                error_log("badgeSubmission->getStatus(): ".$badgeSubmission->getStatus());
+                #error_log("badgeSubmission->getStatus(): ".$badgeSubmission->getStatus());
             }
             $result[] = [
                 'id' => $badge->getId(),
@@ -190,7 +212,9 @@ class OpenBadgesPlugin extends GenericPlugin {
         return $result;
     }
 
-
+    //TODO 2 options for this
+    // 1-Load initial data from xml or json
+    // 2-Add settings section for manage that data
     function inicializarBadges(){
 
         $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
@@ -199,47 +223,45 @@ class OpenBadgesPlugin extends GenericPlugin {
         DAORegistry::registerDAO('BadgeDAO', $badgeDao);
         import('plugins.generic.openbadges.classes.Badge');
 
+        //TODO refactor this method to manage dinamically this conditions
         #Datos Abiertos
-        if($badgeDao->getByName(__('plugins.generic.openbadges.badge1name')) === null){
-            $badge = new Badge();
-            $badge->setBadgeName(__('plugins.generic.openbadges.badge1name'));
-            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge1description'));
-            $badge->setBadgeimage($pluginUrl . '/images/data_large_color.png');
-            $badgeDao->insertObject($badge);
+        if(!$badgeDao->existBadges()){
+            if($badgeDao->getByName(__('plugins.generic.openbadges.badge1name')) === null){
+                $badge = new Badge();
+                $badge->setBadgeName(__('plugins.generic.openbadges.badge1name'));
+                $badge->setBadgeDescription(__('plugins.generic.openbadges.badge1description'));
+                $badge->setBadgeimage($pluginUrl . '/images/data_large_color.png');
+                $badgeDao->insertObject($badge);
+            }
+    
+            #Materiales Abiertos
+            if($badgeDao->getByName(__('plugins.generic.openbadges.badge2name')) === null){
+                $badge = new Badge();
+                $badge->setBadgeName( __('plugins.generic.openbadges.badge2name'));
+                $badge->setBadgeDescription(__('plugins.generic.openbadges.badge2description'));
+                $badge->setBadgeimage($pluginUrl . '/images/materials_large_color.png');
+                $badgeDao->insertObject($badge);
+            }
+            
+            #Registro
+            if($badgeDao->getByName(__('plugins.generic.openbadges.badge3name')) === null){
+                $badge = new Badge();
+                $badge->setBadgeName( __('plugins.generic.openbadges.badge3name'));
+                $badge->setBadgeDescription(__('plugins.generic.openbadges.badge3description'));
+                $badge->setBadgeimage($pluginUrl . '/images/preregistered_large_color.png');
+                $badgeDao->insertObject($badge);
+            }
+    
+            #Revisión Transparente
+            if($badgeDao->getByName(__('plugins.generic.openbadges.badge4name')) === null){
+                $badge = new Badge();
+                $badge->setBadgeName( __('plugins.generic.openbadges.badge4name'));
+                $badge->setBadgeDescription(__('plugins.generic.openbadges.badge4description'));
+                $badge->setBadgeimage($pluginUrl . '/images/open_revision_badge.png');
+                $badgeDao->insertObject($badge);
+            }
         }
-
-        #Materiales Abiertos
-        if($badgeDao->getByName(__('plugins.generic.openbadges.badge2name')) === null){
-            $badge = new Badge();
-            $badge->setBadgeName( __('plugins.generic.openbadges.badge2name'));
-            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge2description'));
-            $badge->setBadgeimage($pluginUrl . '/images/materials_large_color.png');
-            $badgeDao->insertObject($badge);
-        }
-        
-        #Registro
-        if($badgeDao->getByName(__('plugins.generic.openbadges.badge3name')) === null){
-            $badge = new Badge();
-            $badge->setBadgeName( __('plugins.generic.openbadges.badge3name'));
-            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge3description'));
-            $badge->setBadgeimage($pluginUrl . '/images/preregistered_large_color.png');
-            $badgeDao->insertObject($badge);
-        }
-
-        #Revisión Transparente
-        if($badgeDao->getByName(__('plugins.generic.openbadges.badge4name')) === null){
-            $badge = new Badge();
-            $badge->setBadgeName( __('plugins.generic.openbadges.badge4name'));
-            $badge->setBadgeDescription(__('plugins.generic.openbadges.badge4description'));
-            $badge->setBadgeimage($pluginUrl . '/images/data_large_color_pa.png');
-            $badgeDao->insertObject($badge);
-        }
-
     }
-
-
-
-
 
 
     function install() {

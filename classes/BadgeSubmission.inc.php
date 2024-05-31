@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2024+ glaux.es
  *
- * @class Badge
+ * @class BadgeSubmission
  * @ingroup plugins_generic_openbadges
  *
  * Data object representing a badgeSubmission.
@@ -76,6 +76,5 @@ class BadgeSubmission extends DataObject {
 	function setStatus($enabled) {
 		return $this->setData('badgeStatus', $enabled);
 	}
-
 
 }

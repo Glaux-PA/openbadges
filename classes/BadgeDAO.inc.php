@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2024+ glaux.es
  *
- * @class Badge
+ * @class BadgeDAO
  * @ingroup plugins_generic_openbadges
  *
  * Operations for retrieving and modifying badge objects.
@@ -13,8 +13,6 @@
 
 import('lib.pkp.classes.db.DAO');
 import('plugins.generic.openbadges.classes.Badge');
-
-
 
 class BadgeDAO extends DAO {
 
@@ -50,7 +48,6 @@ class BadgeDAO extends DAO {
 		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
-
 	/**
 	 * Get all badges
 	 */	
@@ -62,22 +59,23 @@ class BadgeDAO extends DAO {
 		
 		return new DAOResultFactory($result, $this, '_fromRow');
 		
-		/*
-        $result = $this->retrieve(
-            'SELECT * FROM badge'
-        );
-		error_log("Dentro de getAll");
-		error_log($result);
-        $badges = [];
-        while ($row = $result->next()) {
-			error_log("Dentro del while de getAll");
-            $badges[] = $this->_fromRow((array) $row);
-        }
-
-        return $badges;
-		*/
     }
 
+	/**
+	 * Get if existe any badge in bbdd
+	 * @return exist
+	 */
+	function existBadges() {
+
+		$result = $this->retrieve(
+			'SELECT EXISTS(SELECT 1 FROM badge) AS register_exist'
+		);
+	
+		$row = $result->current();
+		$exist = $row->register_exist;
+		return $exist;
+
+	}
 
 	/**
 	 * Insert a badge.
@@ -97,8 +95,6 @@ class BadgeDAO extends DAO {
 		$this->updateLocaleFields($badge);
 		return $badge->getId();
 	}
-
-
 
 	/**
 	 * Update the database with a badge object
@@ -174,7 +170,6 @@ class BadgeDAO extends DAO {
 		return $badge;
 	}
 
-
 	/**
 	 * Get the insert ID for the last inserted funder.
 	 * @return int
@@ -182,7 +177,6 @@ class BadgeDAO extends DAO {
 	function getInsertId() {
 		return $this->_getInsertId('badge', 'badge_id');
 	}
-
 
 	/**
 	 * Update the settings for this object

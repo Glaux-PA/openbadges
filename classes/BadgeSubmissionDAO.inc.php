@@ -1,5 +1,3 @@
-
-
 <?php
 
 /**
@@ -7,7 +5,7 @@
  *
  * Copyright (c) 2024+ glaux.es
  *
- * @class Badge
+ * @class BadgeSubmissionDAO
  * @ingroup plugins_generic_openbadges
  *
  * Operations for retrieving and modifying badge submission objects.
@@ -70,8 +68,6 @@ class BadgeSubmissionDAO extends DAO {
 
 	}
 	
-
-
 	/**
 	 * Get badges by submission ID and badgeID
 	 * @param $submissionId int Submission ID
@@ -112,7 +108,7 @@ class BadgeSubmissionDAO extends DAO {
 		return $badgeSubmission->getId();
 	}
 
-		/**
+	/**
 	 * Update the database with a BadgeSubmission object
 	 * @param $badgeSubmission BadgeSubmission
 	 */
@@ -134,7 +130,6 @@ class BadgeSubmissionDAO extends DAO {
 		);
 		$this->updateLocaleFields($badgeSubmission);
 	}
-
 
 	/**
 	 * Delete BadgeSubmission by ID.
@@ -175,7 +170,6 @@ class BadgeSubmissionDAO extends DAO {
 
 		return $badgeSubmission;
 	}
-
 
 	/**
 	 * Get the insert ID for the last inserted badge_submission.
