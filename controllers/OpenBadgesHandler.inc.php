@@ -13,18 +13,20 @@
 
 import('lib.pkp.classes.handler.PKPHandler');
 
-class OpenBadgesHandler extends Handler{
+class OpenBadgesHandler extends Handler
+{
 	static $plugin;
 
 	/** @var boolean */
 	var $_readOnly;
 
 
-    /**
+	/**
 	 * Constructor
 	 */
-	
-	function __construct() {
+
+	function __construct()
+	{
 		parent::__construct();
 		//TODO ADD secutity
 		/*
@@ -34,31 +36,33 @@ class OpenBadgesHandler extends Handler{
 		);
 		*/
 	}
-	
-    //
+
+	//
 	// Getters/Setters
 	//
 	/**
 	 * Set the Badge plugin.
 	 * @param $plugin OpenBadgesPlugin
 	 */
-	
-	static function setPlugin($plugin) {
+
+	static function setPlugin($plugin)
+	{
 		self::$plugin = $plugin;
 	}
-	
+
 
 	/**
 	 * Get the submission associated
 	 * @return Submission
 	 */
-	
-	function getSubmission() {
+
+	function getSubmission()
+	{
 		return $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 	}
-	
 
-    //
+
+	//
 	// Overridden template methods
 	//
 
@@ -75,14 +79,15 @@ class OpenBadgesHandler extends Handler{
 	*/
 
 
-	/**		
+	/**
 	 * Update a submision badges
 	 * @param $args array
 	 * @param $request PKPRequest
 	 * @return string Serialized JSON object
 	 */
-	function updateBadges($args, $request) {
-		
+	function updateBadges($args, $request)
+	{
+
 		$submissionId = $request->getUserVar('submissionId');
 
 		$submissionDAO = DAORegistry::getDAO('SubmissionDAO');
@@ -92,10 +97,10 @@ class OpenBadgesHandler extends Handler{
 
 		$badges = $request->getUserVar('badges');
 
-        import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
-        $badgeSubmissionDao = new BadgeSubmissionDAO();
-        DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
-        import('plugins.generic.openbadges.classes.BadgeSubmission');
+		import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
+		$badgeSubmissionDao = new BadgeSubmissionDAO();
+		DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
+		import('plugins.generic.openbadges.classes.BadgeSubmission');
 
 		foreach ($badges as $badge) {
 			$badgeSubmission = new BadgeSubmission();
@@ -108,10 +113,10 @@ class OpenBadgesHandler extends Handler{
 		}
 
 
-      	// TODO Redirige a una página de éxito o vuelve al formulario
-	  	#$dispatcher = $request->getDispatcher();
-	  	#$dispatcher->handleRedirect();
-    	#$dispatcher->handleRedirect(null, null, "submissions/$submissionId"); // Ajusta esta línea según tu ruta de formulario
+		// TODO Redirige a una página de éxito o vuelve al formulario
+		#$dispatcher = $request->getDispatcher();
+		#$dispatcher->handleRedirect();
+		#$dispatcher->handleRedirect(null, null, "submissions/$submissionId"); // Ajusta esta línea según tu ruta de formulario
 
 		$templateMgr = TemplateManager::getManager($request);
 		#$templateMgr->display(self::$plugin->getTemplateResource('badgesform.tpl'));
@@ -124,8 +129,8 @@ class OpenBadgesHandler extends Handler{
 		#$dispatcher->handleRedirect();
 
 		#$this->setupTemplate($request);
-        #$dispatcher = $request->getDispatcher();
-        #$dispatcher->handleRedirect();
+		#$dispatcher = $request->getDispatcher();
+		#$dispatcher->handleRedirect();
 
 		// Redirigir de vuelta al formulario
 		$router = $request->getRouter();
@@ -136,17 +141,18 @@ class OpenBadgesHandler extends Handler{
 		#$url = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'index', array($submissionId, '1'));
 
 		#return $request->redirectUrlJson($url);
+		$dispatcher = Application::get()->getDispatcher();
+		$context = $request->getContext();
+		$url = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'index', [$submission->getId(), 5],null, "publication/badgesInWorkflow");
+		echo $url;
+		// $router = $request->getRouter();
+		//     $url = $router->url($request, null, 'authorDashboard', 'submission', $submission->getId());
+
+		// Realizar la redirección completa
+		$request->redirectUrl($url);
 
 
-		$router = $request->getRouter();
-        $url = $router->url($request, null, 'workflow', 'index', array($submissionId, '1'));
-        
-        // Realizar la redirección completa
-        return $request->redirectUrl($url);
 
-
-
-	  return true;
-    }
-
+		return true;
+	}
 }
