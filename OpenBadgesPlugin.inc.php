@@ -27,7 +27,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 
                 $templateMgr->addStyleSheet(
                     'badgeStyles',
-                    $this->getCssUrl($request).'/styles-frontend.css',
+                    $this->getCssUrl($request).'/styles-front.css',
                     array('contexts' => 'frontend')
                 );
 
