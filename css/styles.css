@@ -5,13 +5,10 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid #ddd;
 }
-
-.pkp_form .pkpFormGroup {
-    padding-left: 0;
-}
-
-.pkp_form .pkpFormPage__footer {
-    border-top: 0;
+.pkp_form .badge-container:last-of-type {
+    border-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 /* Estilos para la columna de la imagen */

@@ -9,8 +9,8 @@
 
 {capture assign=actionUrl}{url router=$smarty.const.ROUTE_COMPONENT component="plugins.generic.openbadges.controllers.OpenBadgesHandler" op="updateBadges" submissionId=$submissionId escape=false}{/capture}
 
-<div class="pkpFormGroup pkpTab">
     <form class="pkpForm pkp_form" method="post" id="badgesForm" action="{$actionUrl}">
+<fieldset class="pkpFormGroup -pkpClearfix">
         {foreach from=$badges item=badge}
             <div class="badge-container">
                 <div class="badge-image">
@@ -19,6 +19,7 @@
                 <div class="badge-details">
                     <h3>{$badge.title}</h3>
                     <p>{$badge.description}</p>
+
                     <div class="badge-url">
                         <label for="url_{$badge.badgeSubmissionID}">URL:</label>
                         <input type="url" name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
@@ -39,12 +40,11 @@
                 </div>
             </div>
         {/foreach}
-        <div class="pkpFormPage__footer" aria-live="polite">
-            {fbvFormSection class="pkpFormPage__buttons"}
+        </fieldset>
+        <div aria-live="polite" class="pkpFormPage__footer">
+            {fbvFormSection class="formButtons"}
             {assign var=buttonId value="submitFormButton"|concat:"-"|uniqid}
             {fbvElement type="submit" class="submitFormButton" id=$buttonId label="common.save"}
             {/fbvFormSection}
         </div>
-
     </form>
-</div>
