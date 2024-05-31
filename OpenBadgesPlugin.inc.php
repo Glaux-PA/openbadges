@@ -5,7 +5,7 @@ import('lib.pkp.classes.plugins.GenericPlugin');
 require_once('BadgesSchemaMigration.inc.php');
 
 class OpenBadgesPlugin extends GenericPlugin {
-    
+
     public function register($category, $path, $mainContextId = NULL) {
 
         if (parent::register($category, $path, $mainContextId)) {
@@ -20,14 +20,14 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $request = $this->getRequest();
                 $templateMgr = TemplateManager::getManager($request);
                 $templateMgr->addStyleSheet(
-                    'badgeStyles', 
-                    $this->getCssUrl($request).'/styles.css', 
+                    'badgeStyles',
+                    $this->getCssUrl($request).'/styles.css',
                     array('contexts' => 'backend')
                 );
 
                 $templateMgr->addStyleSheet(
-                    'badgeStyles', 
-                    $this->getCssUrl($request).'/styles.css', 
+                    'badgeStyles',
+                    $this->getCssUrl($request).'/styles-frontend.css',
                     array('contexts' => 'frontend')
                 );
 
@@ -37,7 +37,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 
                 HookRegistry::register('LoadComponentHandler', array($this, 'setupBadgesHandler'));
 
-                
+
                 //Submission/publication form
                 HookRegistry::register('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
                 // Frontend
@@ -52,8 +52,8 @@ class OpenBadgesPlugin extends GenericPlugin {
             return true;
         }
         return false;
-    } 
-    
+    }
+
 
 
 	/**
@@ -99,10 +99,10 @@ class OpenBadgesPlugin extends GenericPlugin {
 			'<tab id="badgesInWorkflow" label="%s">%s</tab>',
 			__('plugins.generic.openbadges.tabName'),
 			$smarty->fetch($this->getTemplateResource('badgesform.tpl'))
-		);        
+		);
 
 		return false;
-	}    
+	}
 
 
 	/**
@@ -122,12 +122,12 @@ class OpenBadgesPlugin extends GenericPlugin {
         $templateMgr->assign('badges', $badges);
 
         #$templateMgr->addStylesheet('badgeStyles', $this->getPluginPath() . '/css/styles.css');
-        
+
         #$templateMgr->addStyleSheet(
-        #    'badgeStyles', 'css/styles.css', 
+        #    'badgeStyles', 'css/styles.css',
         #    array('contexts' => 'backend')
         #);
-            
+
         $output .= $templateMgr->fetch($this->getTemplateResource('block.tpl'));
 
 		return false;
@@ -186,7 +186,7 @@ class OpenBadgesPlugin extends GenericPlugin {
             // Procesar cada badge
             $badgeSubmission = new BadgeSubmission();
             if($badgeSubmissionDao->existSubmisionBadge($submissionID, $badge->getId()) == false){
-                
+
                 $badgeSubmission->setBadgeId($badge->getId());
                 $badgeSubmission->setSubmissionId($submissionID);
                 $badgeSubmission->setBadgeUrl("http://pruebas.glaux.es#");
@@ -202,13 +202,13 @@ class OpenBadgesPlugin extends GenericPlugin {
                 'description' => $badge->getBadgeDescription(),
                 'image' => $badge->getBadgeImage(),
                 'url' => $badgeSubmission->getBadgeUrl(),
-                'isActive' => $badgeSubmission->getStatus(),                
+                'isActive' => $badgeSubmission->getStatus(),
                 'submissionID' => $badgeSubmission->getSubmissionId(),
                 'badgeSubmissionID' => $badgeSubmission->getId()
             ];
 
         }
-        
+
         return $result;
     }
 
@@ -233,7 +233,7 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeimage($pluginUrl . '/images/data_large_color.png');
                 $badgeDao->insertObject($badge);
             }
-    
+
             #Materiales Abiertos
             if($badgeDao->getByName(__('plugins.generic.openbadges.badge2name')) === null){
                 $badge = new Badge();
@@ -242,7 +242,7 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeimage($pluginUrl . '/images/materials_large_color.png');
                 $badgeDao->insertObject($badge);
             }
-            
+
             #Registro
             if($badgeDao->getByName(__('plugins.generic.openbadges.badge3name')) === null){
                 $badge = new Badge();
@@ -251,7 +251,7 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeimage($pluginUrl . '/images/preregistered_large_color.png');
                 $badgeDao->insertObject($badge);
             }
-    
+
             #Revisión Transparente
             if($badgeDao->getByName(__('plugins.generic.openbadges.badge4name')) === null){
                 $badge = new Badge();
