@@ -1,10 +1,14 @@
 /* Estilos para el contenedor principal */
 .pkp_form .badge-container {
     display: flex; /* Usa flexbox para crear un layout de dos columnas */
-    align-items: center; /* Centra verticalmente los elementos */
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #ddd;
+}
+
+
+.pkp_form .pkpFormGroup {
+    padding-left: 0;
 }
 
 .pkp_form .badge-container:not(:last-child) {
@@ -14,7 +18,9 @@
 
 /* Estilos para la columna de la imagen */
 .pkp_form .badge-container .badge-image {
-    margin-right: 1rem; /* Añade un margen entre la imagen y los otros campos */
+    margin-right: 2rem; /* Añade un margen entre la imagen y los otros campos */
+    flex: 0 0 auto;
+    max-width: 110px;
 }
 
 /* Estilos para la columna de los detalles */
@@ -40,11 +46,13 @@
 
 .pkp_form .badge-container .badge-details .badge-status label {
     margin-left: .25rem;
+    font-weight: normal;
+    font-size: 0.938rem;
 }
 
 .pkp_form .badge-container .badge-details p {
-    font-size: .875rem;
-    line-height: 1.2em;
+    font-size: 0.938rem;
+    line-height: 1.3em;
 }
 
 .pkp_form .badge-container .badge-details h3 {
