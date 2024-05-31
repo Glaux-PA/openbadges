@@ -6,14 +6,8 @@
     border-bottom: 1px solid #ddd;
 }
 
-
 .pkp_form .pkpFormGroup {
     padding-left: 0;
-}
-
-.pkp_form .badge-container:not(:last-child) {
-    margin-bottom: 1rem; /* Espacio adicional entre los contenedores */
-    border-bottom: 0;
 }
 
 /* Estilos para la columna de la imagen */
@@ -23,18 +17,8 @@
     max-width: 110px;
 }
 
-/* Estilos para la columna de los detalles */
-.pkp_form .badge-container .badge-details .badge-url {
-    display: flex !important;
-    width: 100%;
-}
-
-.pkp_form .badge-container .badge-details .badge-url label {
-    width: 15%;
-}
-
 .pkp_form .badge-container .badge-details .badge-url input {
-    width: 85%;
+    max-width: 500px;
 }
 
 .pkp_form .badge-container .badge-details .badge-status {
@@ -51,11 +35,13 @@
 }
 
 .pkp_form .badge-container .badge-details p {
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     line-height: 1.3em;
+    margin-top: .5rem;
 }
 
 .pkp_form .badge-container .badge-details h3 {
-    font-size: 1.15rem;
+    font-size: 1rem;
     line-height: 1.2em;
+    margin-bottom: .5rem;
 }
