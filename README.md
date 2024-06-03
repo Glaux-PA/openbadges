@@ -32,7 +32,9 @@ También se puede ver cómo funcionan en una editorial académica importante su 
 * Si no hay insignias para una publicación, no cargamos el bloque para las insignias
 * Ventana de settings para modificar las insignias
 * Implementación/Control de idiomas
+  * Imagenes para cada idioma
 * Seguridad
 * Permitir subir/cambiar imagen
 * Ventana de confirmación para eliminar registros cuando se desactiva el módulo
-* Modificar url por defecto y dejarla en blanco
+  * Revisar ciclo de vida del plugin
+* Modificar url por defecto y dejarla en blanco -> OK
