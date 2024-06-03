@@ -1,4 +1,4 @@
-<div>
+<div class="openBadgesContainer">
   {foreach from=$badges item=badge}
     {if $badge.isActive == true || $badge.isActive == 'true'}
       <div class="badge-container">
