@@ -1,3 +1,8 @@
-.badge-container {
+.badge-item {
 	text-align: center;
+	list-style: none;
+}
+.badge-item img {
+	width:100px;
+	height:auto;
 }
