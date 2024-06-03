@@ -22,14 +22,15 @@
 
                     <div class="badge-url">
                         <label for="url_{$badge.badgeSubmissionID}">URL:</label>
-                        <input type="url" name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
+                        <!--<input type="url" name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">-->
+                        <input name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
                     </div>
                     <div class="badge-status">
                         <label for="active_{$badge.badgeSubmissionID}">Activar</label>
                         {assign var="isActive" value=$badge.isActive|default:false}
                         <input type="checkbox" name="badges[{$badge.badgeSubmissionID}][isActive]"
                             id="active_{$badge.badgeSubmissionID}"
-                            {if $isActive == true || $isActive == 'true' || $isActive === 1 || $isActive === '1'}checked{/if}>
+                            {if $isActive == true || $isActive === 1}checked{/if}>
                     </div>
                     <input type="hidden" name="badges[{$badge.badgeSubmissionID}][title]" value="{$badge.title}">
                     <input type="hidden" name="badges[{$badge.badgeSubmissionID}][description]"

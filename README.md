@@ -29,8 +29,10 @@ También se puede ver cómo funcionan en una editorial académica importante su 
 
 
 ### Pendiente:
+* Si no hay insignias para una publicación, no cargamos el bloque para las insignias
 * Ventana de settings para modificar las insignias
 * Implementación/Control de idiomas
 * Seguridad
 * Permitir subir/cambiar imagen
 * Ventana de confirmación para eliminar registros cuando se desactiva el módulo
+* Modificar url por defecto y dejarla en blanco

@@ -47,7 +47,7 @@ class OpenBadgesPlugin extends GenericPlugin {
             } else {
                 //TODO change this call and adapt to plugin lifecicle
                 // or make a alert windows that allow user to confirm the removal of badges data
-                $this->uninstall();
+                #$this->uninstall();
             }
             return true;
         }
@@ -189,7 +189,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 
                 $badgeSubmission->setBadgeId($badge->getId());
                 $badgeSubmission->setSubmissionId($submissionID);
-                $badgeSubmission->setBadgeUrl("http://pruebas.glaux.es#");
+                $badgeSubmission->setBadgeUrl("#");
                 $badgeSubmission->setStatus(false);
                 $badgeSubmissionDao->insertObject($badgeSubmission);
             }else{
