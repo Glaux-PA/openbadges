@@ -14,19 +14,18 @@
         {foreach from=$badges item=badge}
             <div class="badge-container">
                 <div class="badge-image">
-                    <img src="{$pluginBaseUrl|escape}/{$badge.image|escape}" alt="Imagen 2 de {$badge.title}">
+                    <img src="{$pluginBaseUrl|escape}/{$pluginurl|escape}{translate key=$badge.image|escape}" alt="Imagen 2 de {$badge.title}">
                 </div>
                 <div class="badge-details">
-                    <h3>{$badge.title}</h3>
-                    <p>{$badge.description}</p>
+                    <h3>{translate key=$badge.title}</h3>
+                    <p>{translate key=$badge.description}</p>
 
                     <div class="badge-url">
                         <label for="url_{$badge.badgeSubmissionID}">URL:</label>
-                        <!--<input type="url" name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">-->
                         <input name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
                     </div>
                     <div class="badge-status">
-                        <label for="active_{$badge.badgeSubmissionID}">Activar</label>
+                        <label for="active_{$badge.badgeSubmissionID}">{translate key="plugins.generic.openbadges.activeLabel"}</label>
                         {assign var="isActive" value=$badge.isActive|default:false}
                         <input type="checkbox" name="badges[{$badge.badgeSubmissionID}][isActive]"
                             id="active_{$badge.badgeSubmissionID}"

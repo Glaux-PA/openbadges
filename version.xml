@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE version SYSTEM "../../../lib/pkp/dtd/pluginVersion.dtd">
+<!--
+  * plugins/generic/openbadges/version.xml
+  *
+  * Copyright (c) 2024+ glaux.es
+  *
+  * Plugin version information.
+  -->
 <version>
     <application>openbadges</application>
     <type>plugins.generic</type>

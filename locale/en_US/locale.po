@@ -16,37 +16,52 @@ msgid "plugins.generic.openbadges.displayName"
 msgstr "Open Science Badges"
 
 msgid "plugins.generic.openbadges.description"
-msgstr "Plugin para mostrar las insignias de ciencia abierta"
+msgstr "Plugin to display open science badges"
 
 msgid "plugins.generic.openbadges.settings"
-msgstr "Configuración"
+msgstr "Configuration"
 
 msgid "plugins.generic.openbadges.instructions"
-msgstr "Seleccionar la insignia a aplicar"
+msgstr "Select the badge to apply"
 
 msgid "plugins.generic.openbadges.tabName"
 msgstr "Badges"
 
 msgid "plugins.generic.openbadges.badge1name"
-msgstr "Datos Abiertos"
+msgstr "Open Data"
 
 msgid "plugins.generic.openbadges.badge1description"
-msgstr "Artículos en los que sus autores compartan los datos de su investigación"
+msgstr "Articles in which their authors share their research data"
+
+msgid "plugins.generic.openbadges.badge1image"
+msgstr "/images/en/data_large.png"
 
 msgid "plugins.generic.openbadges.badge2name"
-msgstr "Materiales Abiertos"
+msgstr "Open Materials"
 
 msgid "plugins.generic.openbadges.badge2description"
-msgstr "Artículos en los que sus autores compartan materiales adicionales de la investigación"
+msgstr "Articles in which authors share additional research materials"
+
+msgid "plugins.generic.openbadges.badge2image"
+msgstr "/images/en/materials_large.png"
 
 msgid "plugins.generic.openbadges.badge3name"
-msgstr "Registro"
+msgstr "Preregistered"
 
 msgid "plugins.generic.openbadges.badge3description"
-msgstr "Artículos en los que sus autores hayan realizado un registro previo del diseño de su investigación o de la versión inicial de su manuscrito en un repositorio público"
+msgstr "Articles in which the authors have previously registered the design of their research or the initial version of their manuscript in a public repository"
+
+msgid "plugins.generic.openbadges.badge3image"
+msgstr "/images/en/preregistered_large.png"
 
 msgid "plugins.generic.openbadges.badge4name"
-msgstr "Revisión Transparente"
+msgstr "Open Revision"
 
 msgid "plugins.generic.openbadges.badge4description"
-msgstr "Artículos en los que sus autores permitan que todo el proceso de revisión por pares sea público"
+msgstr "Articles in which their authors allow the entire peer review process to be public"
+
+msgid "plugins.generic.openbadges.badge4image"
+msgstr "/images/en/revision_large.png"
+
+msgid "plugins.generic.openbadges.activeLabel"
+msgstr "Active"

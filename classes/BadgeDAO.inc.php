@@ -86,9 +86,9 @@ class BadgeDAO extends DAO {
 		$this->update(
 			'INSERT INTO badge (badge_name, badge_description, badge_image) VALUES (?, ?, ?)',
 			array(
-				$badge->getBadgeName(),
-				$badge->getBadgeDescription(),
-                $badge->getBadgeImage()
+				$badge->getBadgeName(null),
+				$badge->getBadgeDescription(null),
+                $badge->getBadgeImage(null)
 			)
 		);
 		$badge->setId($this->getInsertId());
@@ -108,9 +108,9 @@ class BadgeDAO extends DAO {
                 badge_image = ?
 			WHERE badge_id = ?',
 			array(
-				$badge->getBadgeName(),
-				$badge->getBadgeDescription(),
-                $badge->getBadgeImage(),
+				$badge->getBadgeName(null),
+				$badge->getBadgeDescription(null),
+                $badge->getBadgeImage(null),
 				(int) $badge->getId()
 			)
 		);
@@ -161,9 +161,9 @@ class BadgeDAO extends DAO {
 	function _fromRow($row) {
 		$badge = $this->newDataObject();
 		$badge->setId($row['badge_id']);
-		$badge->setBadgeName($row['badge_name']);
-		$badge->setBadgeDescription($row['badge_description']);
-		$badge->setBadgeimage($row['badge_image']);
+		$badge->setBadgeName($row['badge_name'], null);
+		$badge->setBadgeDescription($row['badge_description'], null);
+		$badge->setBadgeimage($row['badge_image'], null);
 
 		$this->getDataObjectSettings('badge_settings', 'badge_id', $row['badge_id'], $badge);
 

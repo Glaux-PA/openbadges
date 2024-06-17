@@ -64,9 +64,7 @@ class BadgesSchemaMigration extends Migration {
 					$table->unique(['badge_submission_id', 'locale', 'setting_name'], 'badge_submission_settings_pkey');
 				});
 			}	
-			
 		}
-
 
 		public function down(): void {
 			Capsule::schema()->dropIfExists('badge');
@@ -74,5 +72,4 @@ class BadgesSchemaMigration extends Migration {
 			Capsule::schema()->dropIfExists('badge_submission');
 			Capsule::schema()->dropIfExists('badge_submission_settings');
 		}
-
 }

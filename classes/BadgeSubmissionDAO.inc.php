@@ -15,18 +15,15 @@ import('lib.pkp.classes.db.DAO');
 import('plugins.generic.openbadges.classes.BadgeSubmission');
 class BadgeSubmissionDAO extends DAO {
 
-
 	/**
 	 * Get a badge_submission by ID
 	 * @param $badge_submission_id int BadgeSubmission ID
 	 */
 	function getById($badgeSubmissionID) {
-
 		$result = $this->retrieve(
 			'SELECT * FROM badge_submission WHERE badge_submission_id = ?',
 			[$badgeSubmissionID]
 		);
-
 		$row = $result->current();
 		return $row ? $this->_fromRow((array) $row) : null;
 	}
@@ -37,16 +34,12 @@ class BadgeSubmissionDAO extends DAO {
 	 * @return BadgeSubmission
 	 */
 	function getBySubmissionId($submissionId) {
-
 		$result = $this->retrieve(
 			'SELECT * FROM badge_submission WHERE submission_id = ?',
 			$submissionId
 		);
-	
 		$row = $result->current();
 		return $row ? $this->_fromRow((array) $row) : null;
-		#return new DAOResultFactory($rows, $this, '_fromRow');
-
 	}
 
 	/**
@@ -56,16 +49,13 @@ class BadgeSubmissionDAO extends DAO {
 	 * @return exist
 	 */
 	function existSubmisionBadge($submissionId, $badgeId) {
-
 		$result = $this->retrieve(
 			'SELECT EXISTS(SELECT 1 FROM badge_submission WHERE submission_id = ? AND badge_id = ?) AS register_exist',
 			[(int) $submissionId, (int) $badgeId]
 		);
-	
 		$row = $result->current();
 		$exist = $row->register_exist;
 		return $exist;
-
 	}
 	
 	/**
@@ -75,15 +65,12 @@ class BadgeSubmissionDAO extends DAO {
 	 * @return Submission
 	 */
 	function getBySubmissionAndBadgeId($submissionId, $badgeId) {
-
 		$result = $this->retrieve(
 			'SELECT * FROM badge_submission WHERE submission_id = ? AND badge_id = ?',
 			[(int) $submissionId, (int) $badgeId]
 		);		
-
 		$row = $result->current();
 		return $row ? $this->_fromRow((array) $row) : null;
-
 	}	
 
 	/**
@@ -102,9 +89,7 @@ class BadgeSubmissionDAO extends DAO {
 			)
 		);
 		$badgeSubmission->setId($this->getInsertId());
-
 		$this->updateLocaleFields($badgeSubmission);
-
 		return $badgeSubmission->getId();
 	}
 
@@ -165,9 +150,7 @@ class BadgeSubmissionDAO extends DAO {
 		$badgeSubmission->setSubmissionId($row['submission_id']);
 		$badgeSubmission->setBadgeUrl($row['badge_url']);
 		$badgeSubmission->setStatus($row['badge_status']);
-
 		$this->getDataObjectSettings('badge_submission_settings', 'badge_submission_id', $row['badge_submission_id'], $badgeSubmission);
-
 		return $badgeSubmission;
 	}
 
