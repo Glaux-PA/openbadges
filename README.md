@@ -23,11 +23,6 @@ También se puede ver cómo funcionan en una editorial académica importante su 
 * Open Analytic Code (The Open Analytic Code badge is earned by making publicly available the analytical code needed to reproduce the reported analyses)
 
 
-### Documentación para desarrollo:
-* https://github.com/pkp/staticPages/tree/main
-
-
-
 ### Pendiente:
 * Si no hay insignias para una publicación, no cargamos el bloque para las insignias -> OK
 * Ventana de settings para modificar las insignias
@@ -38,4 +33,10 @@ También se puede ver cómo funcionan en una editorial académica importante su 
 * Ventana de confirmación para eliminar registros cuando se desactiva el módulo
   * Revisar ciclo de vida del plugin
 * Modificar url por defecto y dejarla en blanco -> OK
-* Metadatos -> tag <openbadges> value: cienciaabierta </openbadges>
+* Metadatos -> tag <openbadges> value: cienciaabierta </openbadges> -> OK
+  * Incluir este campo en la tabla settings (badge_settings) -> OK
+* Validar las urls:(www.pagina.web) -> 
+
+
+### OJS plugin develop documentation:
+* https://github.com/pkp/staticPages/tree/main

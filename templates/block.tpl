@@ -5,6 +5,7 @@
  *
  * 
  *}
+
 <ul class="open-badges-container">
   {foreach from=$badges item=badge}
     {if $badge.isActive == true}

@@ -178,6 +178,15 @@ class BadgeDAO extends DAO {
 		return $this->_getInsertId('badge', 'badge_id');
 	}
 
+
+	/**
+	 * Get the additional field names.
+	 * @return array
+	 */
+	function getAdditionalFieldNames() {
+		return array('badge_metadata');
+	}
+
 	/**
 	 * Update the settings for this object
 	 * @param $badge object

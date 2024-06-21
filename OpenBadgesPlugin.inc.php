@@ -15,7 +15,7 @@
 
 import('lib.pkp.classes.plugins.GenericPlugin');
 
-require_once('BadgesSchemaMigration.inc.php');
+//require_once('BadgesSchemaMigration.inc.php');
 
 class OpenBadgesPlugin extends GenericPlugin {
 
@@ -25,6 +25,15 @@ class OpenBadgesPlugin extends GenericPlugin {
             if ($this->getEnabled($mainContextId)) {
                 //TODO change this call and adapt to plugin lifecicle
                 $this->install();
+                import('plugins.generic.openbadges.classes.BadgeDAO');
+                $badgeDao = new BadgeDAO();
+                DAORegistry::registerDAO('BadgeDAO', $badgeDao);
+    
+                import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
+                $badgeSubmissionDao = new BadgeSubmissionDAO();
+                DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
+
+
                 $this->initBadges();
                 #$this->getInstallMigration();
                 $request = $this->getRequest();
@@ -47,10 +56,12 @@ class OpenBadgesPlugin extends GenericPlugin {
                 // Frontend
                 HookRegistry::register('Templates::Article::Details', array($this, 'addSubmissionDisplay'));
 
+                HookRegistry::register('ArticleHandler::view', array(&$this, 'addSubmissionDisplayHeaders'));
+
             } else {
                 //TODO change this call and adapt to plugin lifecicle
                 // or make a alert windows that allow user to confirm the removal of badges data
-                //$this->uninstall();
+                #$this->uninstall();
             }
             return true;
         }
@@ -96,12 +107,32 @@ class OpenBadgesPlugin extends GenericPlugin {
 	}
 
 	/**
-	* Hook to Templates::Article::Details and Templates::Catalog::Book::Details and list funder information
+	* Hook to ArticleHandler::view add badge metadata
+	* @param $hookName string
+	* @param $params array
+	*/
+    function addSubmissionDisplayHeaders($hookName, $params) {
+        $request = $params[0];    
+        $templateMgr = TemplateManager::getManager($request);
+        $submission = $templateMgr->get_template_vars('article');
+        $badges = $this->getBadges($submission->getId());
+        foreach($badges as $badge){
+            if($badge['isActive']){
+                $badgemetadata = $badge['badgeMetadata']; 
+                $templateMgr->addHeader('openbadge'.$badge['id'], '<meta name="open-badge" content="' 
+                . htmlspecialchars($badgemetadata) . '"/> ');
+            }   
+        }
+    }
+
+
+	/**
+	* Hook to Templates::Article::Details and Templates::Catalog::Book::Details and list badge information
 	* @param $hookName string
 	* @param $params array
 	*/
 	function addSubmissionDisplay($hookName, $params) {
-
+        $request = $params[0];
         $templateMgr = $params[1];
 		$output =& $params[2];
         $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
@@ -117,9 +148,8 @@ class OpenBadgesPlugin extends GenericPlugin {
                 break;
             }
         }
-        if ($hasActive) {
-            $output .= $templateMgr->fetch($this->getTemplateResource('block.tpl'));
-        }
+        $output .= $templateMgr->fetch($this->getTemplateResource('block.tpl'));
+
 		return false;
 	}
 
@@ -183,7 +213,8 @@ class OpenBadgesPlugin extends GenericPlugin {
                 'url' => $badgeSubmission->getBadgeUrl(),
                 'isActive' => $badgeSubmission->getStatus(),
                 'submissionID' => $badgeSubmission->getSubmissionId(),
-                'badgeSubmissionID' => $badgeSubmission->getId()
+                'badgeSubmissionID' => $badgeSubmission->getId(),
+                'badgeMetadata' => $badge->getBadgeMetadata()
             ];
         }
         return $result;
@@ -207,7 +238,9 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeName('plugins.generic.openbadges.badge1name', null);
                 $badge->setBadgeDescription('plugins.generic.openbadges.badge1description', null);
                 $badge->setBadgeimage('plugins.generic.openbadges.badge1image', null);
-                $badgeDao->insertObject($badge);
+                $metadataValue="open-data";
+                $badge->setBadgeMetadata($metadataValue);
+                $badgeDao->insertObject($badge);                
             }
 
             #Open Materials
@@ -216,6 +249,8 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeName('plugins.generic.openbadges.badge2name', null);
                 $badge->setBadgeDescription('plugins.generic.openbadges.badge2description', null);
                 $badge->setBadgeimage('plugins.generic.openbadges.badge2image', null);
+                $metadataValue="open-materials";
+                $badge->setBadgeMetadata($metadataValue);
                 $badgeDao->insertObject($badge);
             }
 
@@ -225,6 +260,8 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeName('plugins.generic.openbadges.badge3name', null);
                 $badge->setBadgeDescription('plugins.generic.openbadges.badge3description', null);
                 $badge->setBadgeimage('plugins.generic.openbadges.badge3image', null);
+                $metadataValue="preregistered";
+                $badge->setBadgeMetadata($metadataValue);                
                 $badgeDao->insertObject($badge);
             }
 
@@ -234,6 +271,8 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badge->setBadgeName('plugins.generic.openbadges.badge4name', null);
                 $badge->setBadgeDescription('plugins.generic.openbadges.badge4description', null);
                 $badge->setBadgeimage('plugins.generic.openbadges.badge4image', null);
+                $metadataValue="open-revision";
+                $badge->setBadgeMetadata($metadataValue);                
                 $badgeDao->insertObject($badge);
             }
         }
@@ -247,7 +286,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 	 * @copydoc Plugin::getInstallMigration()
 	 */
 	function getInstallMigration() {
-		#$this->import('BadgesSchemaMigration');
+		$this->import('BadgesSchemaMigration');
 		return new BadgesSchemaMigration();
 	}
 

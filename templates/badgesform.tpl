@@ -22,7 +22,7 @@
 
                     <div class="badge-url">
                         <label for="url_{$badge.badgeSubmissionID}">URL:</label>
-                        <input name="badges[{$badge.badgeSubmissionID}][url]" value="{$badge.url}">
+                        <input type="text" name="badges[{$badge.badgeSubmissionID}][url]" pattern="^(#|https?:\/\/.*)$" value="{$badge.url}">
                     </div>
                     <div class="badge-status">
                         <label for="active_{$badge.badgeSubmissionID}">{translate key="plugins.generic.openbadges.activeLabel"}</label>

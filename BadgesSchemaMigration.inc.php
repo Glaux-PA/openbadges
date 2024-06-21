@@ -14,12 +14,14 @@ use Illuminate\Database\Schema\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
+
 class BadgesSchemaMigration extends Migration {
 
         /**
          * Run the migrations.
          * @return void
          */
+		
         public function up() {
 			if (!Capsule::schema()->hasTable('badge')) {
 				# badge

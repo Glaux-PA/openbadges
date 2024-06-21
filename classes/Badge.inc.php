@@ -101,6 +101,29 @@ class Badge extends DataObject {
     public function getLocalizedBadgeImage()
     {
         return $this->getLocalizedData('badgeImage');
+    }
+	
+	
+	function getBadgeMetadata() {
+        return $this->getData('badge_metadata');
+    }
+
+    function setBadgeMetadata($metadata) {
+        return $this->setData('badge_metadata', $metadata);
+    }
+
+    /**
+     * Get Localized badge fields
+     */
+    public static function getLocaleFieldNames() {
+        return ['badge_metadata'];
+    }
+
+    /**
+     * Get Localized additional badge fields
+     */
+    public static function getAdditionalFieldNames() {
+        return ['badge_metadata'];
     }	
 
 }

@@ -53,7 +53,6 @@ class OpenBadgesHandler extends Handler{
 	//
 	// Overridden template methods
 	//
-	//TODO ADD secutity
 	/**
 	 * @copydoc PKPHandler::authorize()
 	 */
