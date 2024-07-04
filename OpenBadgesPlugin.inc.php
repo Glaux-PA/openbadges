@@ -35,6 +35,8 @@ class OpenBadgesPlugin extends GenericPlugin {
 
 
                 $this->initBadges();
+                //Update badge settings
+                $this->checkAndAddSmallImageSetting();
                 #$this->getInstallMigration();
                 $request = $this->getRequest();
                 $templateMgr = TemplateManager::getManager($request);
@@ -55,8 +57,11 @@ class OpenBadgesPlugin extends GenericPlugin {
                 HookRegistry::register('Template::Workflow::Publication', array($this, 'addToPublicationForms'));
                 // Frontend
                 HookRegistry::register('Templates::Article::Details', array($this, 'addSubmissionDisplay'));
-
+                // Frontend - Badge Headers
                 HookRegistry::register('ArticleHandler::view', array(&$this, 'addSubmissionDisplayHeaders'));
+                // Frontend - Articles list - Add small badge icons
+                HookRegistry::register('Templates::Issue::Issue::Article', array(&$this, 'addArticleBadges'));
+
 
             } else {
                 //TODO change this call and adapt to plugin lifecicle
@@ -65,6 +70,34 @@ class OpenBadgesPlugin extends GenericPlugin {
             }
             return true;
         }
+        return false;
+    }
+
+	/**
+	 * Insert badgeds in articles list
+	 */
+    function addArticleBadges($hookName, $params) {
+        $output =& $params[2];
+        $smarty = $params[1];
+
+        $article = $smarty->getTemplateVars('article');
+        $submissionId = $article->getId();
+
+        $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
+        $badges = $this->getBadges($article->getId());
+        if (!empty($badges)) {
+            $badgeHtml = '<div class="article-badges">';
+            foreach ($badges as $badge) {
+                if($badge['isActive']){
+                    $badgeHtml .= '<a href="' . htmlspecialchars($badge['url']) . '" target="_blank">';
+                    $badgeHtml .= '<img src="/' . $pluginUrl . $badge['badgeSmallImage'] . '" alt="' . htmlspecialchars(__($badge['title'])) . '" />';
+                    $badgeHtml .= '</a>';
+                }  
+            }
+            $badgeHtml .= '</div>';
+            $output .= $badgeHtml;
+        }
+        
         return false;
     }
 
@@ -214,7 +247,8 @@ class OpenBadgesPlugin extends GenericPlugin {
                 'isActive' => $badgeSubmission->getStatus(),
                 'submissionID' => $badgeSubmission->getSubmissionId(),
                 'badgeSubmissionID' => $badgeSubmission->getId(),
-                'badgeMetadata' => $badge->getBadgeMetadata()
+                'badgeMetadata' => $badge->getBadgeMetadata(),
+                'badgeSmallImage' => $badge->getBadgeSmallImage()
             ];
         }
         return $result;
@@ -277,6 +311,26 @@ class OpenBadgesPlugin extends GenericPlugin {
             }
         }
     }
+
+    /*
+    * Method to add small image to badges
+    * /TODO refactor for dinamic manage updates in badge/submission settings
+    */
+    function checkAndAddSmallImageSetting() {
+        $badgeDao = DAORegistry::getDAO('BadgeDAO');
+        $badges = $badgeDao->getAll();
+        while ($badge = $badges->next()) {
+            $smallImage = $badge->getBadgeSmallImage();
+
+            if (empty($smallImage)) {
+                $badgeId = $badge->getId();
+                $defaultSmallImage = "plugins.generic.openbadges.badge{$badgeId}simage";
+                $badge->setBadgeSmallImage(__($defaultSmallImage));
+                $badgeDao->updateLocaleFields($badge);
+            }
+        }
+    }
+
 
     function install() {
         $this->getInstallMigration()->up();

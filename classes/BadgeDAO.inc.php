@@ -184,7 +184,7 @@ class BadgeDAO extends DAO {
 	 * @return array
 	 */
 	function getAdditionalFieldNames() {
-		return array('badge_metadata');
+		return array('badge_metadata','badge_smallimage');
 	}
 
 	/**

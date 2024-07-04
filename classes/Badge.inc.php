@@ -103,13 +103,38 @@ class Badge extends DataObject {
         return $this->getLocalizedData('badgeImage');
     }
 	
-	
+    /**
+     * Get Localized badge metadata
+     *
+     * @return string
+     */	
 	function getBadgeMetadata() {
         return $this->getData('badge_metadata');
     }
 
+	/**
+	 * Set metadata.
+	 * @param $metadata string
+	 */
     function setBadgeMetadata($metadata) {
         return $this->setData('badge_metadata', $metadata);
+    }
+
+    /**
+     * Get Localized badge small image
+     *
+     * @return string
+     */	
+	function getBadgeSmallImage() {
+        return $this->getData('badge_smallimage');
+    }
+
+	/**
+	 * Set badge small image.
+	 * @param $smallimage string
+	 */
+    function setBadgeSmallImage($smallimage) {
+        return $this->setData('badge_smallimage', $smallimage);
     }
 
     /**

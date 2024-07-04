@@ -36,6 +36,9 @@ msgstr "Articles in which their authors share their research data"
 msgid "plugins.generic.openbadges.badge1image"
 msgstr "/images/en/data_large.png"
 
+msgid "plugins.generic.openbadges.badge1simage"
+msgstr "/images/small/data_small_color.png"
+
 msgid "plugins.generic.openbadges.badge2name"
 msgstr "Open Materials"
 
@@ -44,6 +47,9 @@ msgstr "Articles in which authors share additional research materials"
 
 msgid "plugins.generic.openbadges.badge2image"
 msgstr "/images/en/materials_large.png"
+
+msgid "plugins.generic.openbadges.badge2simage"
+msgstr "/images/small/materials_small_color.png"
 
 msgid "plugins.generic.openbadges.badge3name"
 msgstr "Preregistered"
@@ -54,6 +60,9 @@ msgstr "Articles in which the authors have previously registered the design of t
 msgid "plugins.generic.openbadges.badge3image"
 msgstr "/images/en/preregistered_large.png"
 
+msgid "plugins.generic.openbadges.badge3simage"
+msgstr "/images/small/preregistered_small_color.png"
+
 msgid "plugins.generic.openbadges.badge4name"
 msgstr "Open Revision"
 
@@ -62,6 +71,9 @@ msgstr "Articles in which their authors allow the entire peer review process to 
 
 msgid "plugins.generic.openbadges.badge4image"
 msgstr "/images/en/revision_large.png"
+
+msgid "plugins.generic.openbadges.badge4simage"
+msgstr "/images/small/revision_small.png"
 
 msgid "plugins.generic.openbadges.activeLabel"
 msgstr "Active"

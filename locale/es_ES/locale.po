@@ -36,6 +36,9 @@ msgstr "Artículos en los que sus autores compartan los datos de su investigaci�
 msgid "plugins.generic.openbadges.badge1image"
 msgstr "/images/es/datos_large.png"
 
+msgid "plugins.generic.openbadges.badge1simage"
+msgstr "/images/small/data_small_color.png"
+
 msgid "plugins.generic.openbadges.badge2name"
 msgstr "Materiales Abiertos"
 
@@ -44,6 +47,9 @@ msgstr "Artículos en los que sus autores compartan materiales adicionales de la
 
 msgid "plugins.generic.openbadges.badge2image"
 msgstr "/images/es/materiales_large.png"
+
+msgid "plugins.generic.openbadges.badge2simage"
+msgstr "/images/small/materials_small_color.png"
 
 msgid "plugins.generic.openbadges.badge3name"
 msgstr "Registro"
@@ -54,6 +60,9 @@ msgstr "Artículos en los que sus autores hayan realizado un registro previo del
 msgid "plugins.generic.openbadges.badge3image"
 msgstr "/images/es/registro_large.png"
 
+msgid "plugins.generic.openbadges.badge3simage"
+msgstr "/images/small/preregistered_small_color.png"
+
 msgid "plugins.generic.openbadges.badge4name"
 msgstr "Revisión Transparente"
 
@@ -62,6 +71,9 @@ msgstr "Artículos en los que sus autores permitan que todo el proceso de revisi
 
 msgid "plugins.generic.openbadges.badge4image"
 msgstr "/images/es/revision_large.png"
+
+msgid "plugins.generic.openbadges.badge4simage"
+msgstr "/images/small/revision_small.png"
 
 msgid "plugins.generic.openbadges.activeLabel"
 msgstr "Activo"
