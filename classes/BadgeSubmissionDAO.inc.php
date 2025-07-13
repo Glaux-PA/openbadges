@@ -33,7 +33,8 @@ class BadgeSubmissionDAO extends DAO {
 	 * @param $submissionId int Submission ID
 	 * @return BadgeSubmission
 	 */
-	function getBySubmissionId($submissionId) {
+	function getBySubmissionId($submissionId)
+	{
 		$result = $this->retrieve(
 			'SELECT * FROM badge_submission WHERE submission_id = ?',
 			$submissionId
@@ -57,7 +58,7 @@ class BadgeSubmissionDAO extends DAO {
 		$exist = $row->register_exist;
 		return $exist;
 	}
-	
+
 	/**
 	 * Get badges by submission ID and badgeID
 	 * @param $submissionId int Submission ID
@@ -68,10 +69,10 @@ class BadgeSubmissionDAO extends DAO {
 		$result = $this->retrieve(
 			'SELECT * FROM badge_submission WHERE submission_id = ? AND badge_id = ?',
 			[(int) $submissionId, (int) $badgeId]
-		);		
+		);
 		$row = $result->current();
 		return $row ? $this->_fromRow((array) $row) : null;
-	}	
+	}
 
 	/**
 	 * Insert a BadgeSubmission.
@@ -97,7 +98,8 @@ class BadgeSubmissionDAO extends DAO {
 	 * Update the database with a BadgeSubmission object
 	 * @param $badgeSubmission BadgeSubmission
 	 */
-	function updateObject($badgeSubmission) {
+	function updateObject($badgeSubmission)
+	{
 		$this->update(
 			'UPDATE	badge_submission
 			SET	badge_id = ?,
@@ -108,7 +110,7 @@ class BadgeSubmissionDAO extends DAO {
 			array(
 				$badgeSubmission->getBadgeId(),
 				$badgeSubmission->getSubmissionId(),
-                $badgeSubmission->getBadgeUrl(),
+				$badgeSubmission->getBadgeUrl(),
 				$badgeSubmission->getStatus(),
 				(int) $badgeSubmission->getId()
 			)
@@ -129,7 +131,7 @@ class BadgeSubmissionDAO extends DAO {
 			'DELETE FROM badge_submission_settings WHERE badge_submission_id = ?',
 			[(int) $badgeSubmission]
 		);
-	}    
+	}
 
 	/**
 	 * Generate a new BadgeSubmission object.

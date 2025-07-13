@@ -10,17 +10,19 @@
  *
  * Operations for retrieving and modifying badge objects.
  */
-
+use PKP\db\DAOResultFactory;
 import('lib.pkp.classes.db.DAO');
 import('plugins.generic.openbadges.classes.Badge');
 
-class BadgeDAO extends DAO {
+class BadgeDAO extends DAO
+{
 
 	/**
 	 * Get a badge by ID
 	 * @param $badgeId int Badge ID
 	 */
-	function getById($badgeId) {
+	function getById($badgeId)
+	{
 		$params = [(int) $badgeId];
 
 		$result = $this->retrieve(
@@ -36,7 +38,8 @@ class BadgeDAO extends DAO {
 	 * Get a badge by Name
 	 * @param $badge object
 	 */
-	function getByName($badgeName) {
+	function getByName($badgeName)
+	{
 		$params = [(string) $badgeName];
 
 		$result = $this->retrieve(
@@ -50,27 +53,29 @@ class BadgeDAO extends DAO {
 
 	/**
 	 * Get all badges
-	 */	
-    function getAll() {
+	 */
+	function getAll()
+	{
 
 		$result = $this->retrieve(
 			'SELECT * FROM badge'
 		);
-		
+
 		return new DAOResultFactory($result, $this, '_fromRow');
-		
-    }
+
+	}
 
 	/**
 	 * Get if existe any badge in bbdd
 	 * @return exist
 	 */
-	function existBadges() {
+	function existBadges()
+	{
 
 		$result = $this->retrieve(
 			'SELECT EXISTS(SELECT 1 FROM badge) AS register_exist'
 		);
-	
+
 		$row = $result->current();
 		$exist = $row->register_exist;
 		return $exist;
@@ -82,13 +87,14 @@ class BadgeDAO extends DAO {
 	 * @param $badge Badge
 	 * @return int Inserted badge ID
 	 */
-	function insertObject($badge) {
+	function insertObject($badge)
+	{
 		$this->update(
 			'INSERT INTO badge (badge_name, badge_description, badge_image) VALUES (?, ?, ?)',
 			array(
 				$badge->getBadgeName(null),
 				$badge->getBadgeDescription(null),
-                $badge->getBadgeImage(null)
+				$badge->getBadgeImage(null)
 			)
 		);
 		$badge->setId($this->getInsertId());
@@ -100,7 +106,8 @@ class BadgeDAO extends DAO {
 	 * Update the database with a badge object
 	 * @param $badge Badge
 	 */
-	function updateObject($badge) {
+	function updateObject($badge)
+	{
 		$this->update(
 			'UPDATE	badge
 			SET	badge_name = ?,
@@ -110,7 +117,7 @@ class BadgeDAO extends DAO {
 			array(
 				$badge->getBadgeName(null),
 				$badge->getBadgeDescription(null),
-                $badge->getBadgeImage(null),
+				$badge->getBadgeImage(null),
 				(int) $badge->getId()
 			)
 		);
@@ -121,7 +128,8 @@ class BadgeDAO extends DAO {
 	 * Delete a badge by ID.
 	 * @param $badgeId int
 	 */
-	function deleteById($badgeId) {
+	function deleteById($badgeId)
+	{
 
 		$this->update(
 			'DELETE FROM badge WHERE badge_id = ?',
@@ -142,7 +150,8 @@ class BadgeDAO extends DAO {
 	 * Delete a badge object.
 	 * @param $badge Badge
 	 */
-	function deleteObject($badge) {
+	function deleteObject($badge)
+	{
 		$this->deleteById($badge->getId());
 	}
 
@@ -150,7 +159,8 @@ class BadgeDAO extends DAO {
 	 * Generate a new badge object.
 	 * @return Badge
 	 */
-	function newDataObject() {
+	function newDataObject()
+	{
 		return new Badge();
 	}
 
@@ -158,7 +168,8 @@ class BadgeDAO extends DAO {
 	 * Return a new badge object from a given row.
 	 * @return Badge
 	 */
-	function _fromRow($row) {
+	function _fromRow($row)
+	{
 		$badge = $this->newDataObject();
 		$badge->setId($row['badge_id']);
 		$badge->setBadgeName($row['badge_name'], null);
@@ -174,7 +185,8 @@ class BadgeDAO extends DAO {
 	 * Get the insert ID for the last inserted funder.
 	 * @return int
 	 */
-	function getInsertId() {
+	function getInsertId(): int
+	{
 		return $this->_getInsertId('badge', 'badge_id');
 	}
 
@@ -183,15 +195,17 @@ class BadgeDAO extends DAO {
 	 * Get the additional field names.
 	 * @return array
 	 */
-	function getAdditionalFieldNames() {
-		return array('badge_metadata','badge_smallimage');
+	function getAdditionalFieldNames()
+	{
+		return array('badge_metadata', 'badge_smallimage');
 	}
 
 	/**
 	 * Update the settings for this object
 	 * @param $badge object
 	 */
-	function updateLocaleFields($badge) {
+	function updateLocaleFields($badge)
+	{
 		$this->updateDataObjectSettings('badge_settings', $badge, array('badge_id' => (int) $badge->getId()));
 	}
 

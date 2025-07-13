@@ -10,6 +10,9 @@
  *
  * @brief Handle Badge form requests.
  */
+use PKP\security\Role;
+use APP\handler\Handler;
+use APP\facades\Repo;
 
 import('lib.pkp.classes.handler.PKPHandler');
 
@@ -26,7 +29,7 @@ class OpenBadgesHandler extends Handler{
 	function __construct(){
 		parent::__construct();
 		$this->addRoleAssignment(
-			array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_AUTHOR),
+			array(Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT, Role::ROLE_ID_AUTHOR),
 			array('updateBadges')
 		);
 	}
@@ -61,7 +64,7 @@ class OpenBadgesHandler extends Handler{
 		$this->addPolicy(new SubmissionAccessPolicy($request, $args, $roleAssignments));
 		return parent::authorize($request, $args, $roleAssignments);
 	}
-	
+
 	/**
 	 * Update a submision badges
 	 * @param $args array
@@ -71,10 +74,8 @@ class OpenBadgesHandler extends Handler{
 	function updateBadges($args, $request){
 
 		$submissionId = $request->getUserVar('submissionId');
-		$submissionDAO = DAORegistry::getDAO('SubmissionDAO');
-		$submission = $submissionDAO->getById($submissionId);
-		$publicationDao = DAORegistry::getDAO('PublicationDAO');
-		$publication = $publicationDao->getById($submission->getCurrentPublication()->getId());
+		$submission = Repo::submission()->get($submissionId);
+		$publication = Repo::publication()->get($submission->getCurrentPublication()->getId());
 		$badges = $request->getUserVar('badges');
 		import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
 		$badgeSubmissionDao = new BadgeSubmissionDAO();
@@ -86,7 +87,7 @@ class OpenBadgesHandler extends Handler{
 			$badgeSubmissionID = (int) $badge['badgeSubmissionID'];
 			$badgeSubmission = $badgeSubmissionDao->getById($badgeSubmissionID);
 			$badgeSubmission->setBadgeUrl($badge['url']);
-			$isActive = isset($badge['isActive']) ? (bool)$badge['isActive'] : false;
+			$isActive = isset($badge['isActive']) ? (bool) $badge['isActive'] : false;
 			$badgeSubmission->setStatus($isActive);
 			$badgeSubmissionDao->updateObject($badgeSubmission);
 		}
@@ -95,7 +96,7 @@ class OpenBadgesHandler extends Handler{
 		$router = $request->getRouter();
 		$dispatcher = Application::get()->getDispatcher();
 		$context = $request->getContext();
-		$url = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'index', [$submission->getId(), 5],null, "publication/badgesInWorkflow");
+		$url = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'index', [$submission->getId(), 5], null, "publication/badgesInWorkflow");
 
 		// Make complete redirection
 		$request->redirectUrl($url);
@@ -108,21 +109,25 @@ class OpenBadgesHandler extends Handler{
 	 * @param $user User
 	 * @return boolean
 	 */
-	function canAdminister($user) {
+	function canAdminister($user)
+	{
 		$submission = $this->getSubmission();
 
 		// Incomplete submissions can be edited. (Presumably author.)
-		if ($submission->getDateSubmitted() == null) return true;
+		if ($submission->getDateSubmitted() == null)
+			return true;
 		// Managers should always have access.
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-		if (array_intersect(array(ROLE_ID_MANAGER), $userRoles)) return true;
+		if (array_intersect(array(ROLE_ID_MANAGER), $userRoles))
+			return true;
 		// Sub editors and assistants need to be assigned to the current stage.
 		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
 		$stageAssignments = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId(), $submission->getStageId(), null, $user->getId());
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 		while ($stageAssignment = $stageAssignments->next()) {
 			$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
-			if (in_array($userGroup->getRoleId(), array(ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT))) return true;
+			if (in_array($userGroup->getRoleId(), array(ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT)))
+				return true;
 		}
 		// Default: Read-only.
 		return false;
