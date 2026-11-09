@@ -18,6 +18,7 @@ use APP\handler\Handler;
 use APP\plugins\generic\openbadges\classes\BadgeDAO;
 use APP\plugins\generic\openbadges\classes\BadgeSubmission;
 use APP\plugins\generic\openbadges\classes\BadgeSubmissionDAO;
+use PKP\core\JSONMessage;
 use PKP\db\DAORegistry;
 use PKP\security\authorization\SubmissionAccessPolicy;
 use PKP\security\Role;
@@ -75,6 +76,10 @@ class OpenBadgesHandler extends Handler
      */
     public function updateBadges($args, $request)
     {
+        if (!$request->isPost() || !$request->checkCSRF()) {
+            return new JSONMessage(false, __('form.csrfInvalid'));
+        }
+
         $submission = $this->getSubmission();
         $badges = (array) $request->getUserVar('badges');
 
