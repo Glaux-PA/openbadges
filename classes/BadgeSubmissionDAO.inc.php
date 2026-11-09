@@ -129,6 +129,17 @@ class BadgeSubmissionDAO extends DAO {
 			'DELETE FROM badge_submission_settings WHERE badge_submission_id = ?',
 			[(int) $badgeSubmission]
 		);
+	}
+
+	function deleteByBadgeId($badgeId) {
+		$this->update(
+			'DELETE FROM badge_submission_settings WHERE badge_submission_id IN (SELECT badge_submission_id FROM badge_submission WHERE badge_id = ?)',
+			[(int) $badgeId]
+		);
+		$this->update(
+			'DELETE FROM badge_submission WHERE badge_id = ?',
+			[(int) $badgeId]
+		);
 	}    
 
 	/**

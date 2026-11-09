@@ -70,62 +70,41 @@ class OpenBadgesHandler extends Handler{
 	 */
 	function updateBadges($args, $request){
 
-		$submissionId = $request->getUserVar('submissionId');
-		$submissionDAO = DAORegistry::getDAO('SubmissionDAO');
-		$submission = $submissionDAO->getById($submissionId);
-		$publicationDao = DAORegistry::getDAO('PublicationDAO');
-		$publication = $publicationDao->getById($submission->getCurrentPublication()->getId());
+		$submission = $this->getSubmission();
 		$badges = $request->getUserVar('badges');
 		import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
 		$badgeSubmissionDao = new BadgeSubmissionDAO();
 		DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
 		import('plugins.generic.openbadges.classes.BadgeSubmission');
 
-		foreach ($badges as $badge) {
-			$badgeSubmission = new BadgeSubmission();
-			$badgeSubmissionID = (int) $badge['badgeSubmissionID'];
-			$badgeSubmission = $badgeSubmissionDao->getById($badgeSubmissionID);
-			$badgeSubmission->setBadgeUrl($badge['url']);
-			$isActive = isset($badge['isActive']) ? (bool)$badge['isActive'] : false;
-			$badgeSubmission->setStatus($isActive);
+		foreach ((array) $badges as $badge) {
+			$badgeSubmission = $badgeSubmissionDao->getById((int) (isset($badge['badgeSubmissionID']) ? $badge['badgeSubmissionID'] : 0));
+			if (!$badgeSubmission || (int) $badgeSubmission->getSubmissionId() !== (int) $submission->getId()) {
+				continue;
+			}
+			$url = trim((string) (isset($badge['url']) ? $badge['url'] : ''));
+			if ($url !== '#' && !preg_match('#^https?://\S+$#i', $url)) {
+				$url = '#';
+			}
+			$badgeSubmission->setBadgeUrl($url);
+			$badgeSubmission->setStatus(!empty($badge['isActive']));
 			$badgeSubmissionDao->updateObject($badgeSubmission);
 		}
 
-		$templateMgr = TemplateManager::getManager($request);
-		$router = $request->getRouter();
+		$userRoles = (array) $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+		$isEditorial = (bool) array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT), $userRoles);
 		$dispatcher = Application::get()->getDispatcher();
 		$context = $request->getContext();
-		$url = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'index', [$submission->getId(), 5],null, "publication/badgesInWorkflow");
+		if ($isEditorial) {
+			$url = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'index', [$submission->getId(), 5], null, "publication/badgesInWorkflow");
+		} else {
+			$url = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'authorDashboard', 'submission', [$submission->getId()], null, "publication/badgesInWorkflow");
+		}
 
 		// Make complete redirection
 		$request->redirectUrl($url);
 
 		return true;
-	}
-
-	/**
-	 * Determines if there should be add/edit actions on this grid.
-	 * @param $user User
-	 * @return boolean
-	 */
-	function canAdminister($user) {
-		$submission = $this->getSubmission();
-
-		// Incomplete submissions can be edited. (Presumably author.)
-		if ($submission->getDateSubmitted() == null) return true;
-		// Managers should always have access.
-		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-		if (array_intersect(array(ROLE_ID_MANAGER), $userRoles)) return true;
-		// Sub editors and assistants need to be assigned to the current stage.
-		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-		$stageAssignments = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId(), $submission->getStageId(), null, $user->getId());
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-		while ($stageAssignment = $stageAssignments->next()) {
-			$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
-			if (in_array($userGroup->getRoleId(), array(ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT))) return true;
-		}
-		// Default: Read-only.
-		return false;
 	}
 
 }

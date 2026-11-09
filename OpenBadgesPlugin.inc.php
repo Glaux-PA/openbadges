@@ -81,23 +81,20 @@ class OpenBadgesPlugin extends GenericPlugin {
         $smarty = $params[1];
 
         $article = $smarty->getTemplateVars('article');
-        $submissionId = $article->getId();
+        $assetsUrl = $this->getRequest()->getBaseUrl() . '/' . $this->getPluginPath();
 
-        $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
-        $badges = $this->getBadges($article->getId());
-        if (!empty($badges)) {
-            $badgeHtml = '<div class="article-badges">';
-            foreach ($badges as $badge) {
-                if($badge['isActive']){
-                    $badgeHtml .= '<a href="' . htmlspecialchars($badge['url']) . '" target="_blank">';
-                    $badgeHtml .= '<img src="/' . $pluginUrl . $badge['badgeSmallImage'] . '" alt="' . htmlspecialchars(__($badge['title'])) . '" />';
-                    $badgeHtml .= '</a>';
-                }  
+        $badgeHtml = '';
+        foreach ($this->getBadges($article->getId()) as $badge) {
+            if ($badge['isActive']) {
+                $badgeHtml .= '<a href="' . htmlspecialchars($badge['url']) . '" target="_blank" rel="noopener">';
+                $badgeHtml .= '<img src="' . htmlspecialchars($assetsUrl . $badge['badgeSmallImage']) . '" alt="' . htmlspecialchars(__($badge['title'])) . '" />';
+                $badgeHtml .= '</a>';
             }
-            $badgeHtml .= '</div>';
-            $output .= $badgeHtml;
         }
-        
+        if ($badgeHtml !== '') {
+            $output .= '<div class="article-badges">' . $badgeHtml . '</div>';
+        }
+
         return false;
     }
 
@@ -128,9 +125,10 @@ class OpenBadgesPlugin extends GenericPlugin {
 			'submissionId' => $submission->getId(),
 		]);
         //Retrieve badges for this publication
-        $badges = $this->getBadges($submission->getId());
+        $badges = $this->getBadges($submission->getId(), true);
         $smarty->assign('badges', $badges);
         $smarty->assign('pluginurl', $pluginUrl);
+        $smarty->assign('pluginBaseUrl', $this->getRequest()->getBaseUrl());
 		$output .= sprintf(
 			'<tab id="badgesInWorkflow" label="%s">%s</tab>',
 			__('plugins.generic.openbadges.tabName'),
@@ -172,8 +170,6 @@ class OpenBadgesPlugin extends GenericPlugin {
         $submission = $templateMgr->get_template_vars('article');
         //Retrieve badges for this publication
         $badges = $this->getBadges($submission->getId());
-        $templateMgr->assign('badges', $badges);
-        $templateMgr->assign('pluginurl', $pluginUrl);
         $hasActive = false;
         foreach ($badges as $badge) {
             if ($badge['isActive']) {
@@ -181,6 +177,12 @@ class OpenBadgesPlugin extends GenericPlugin {
                 break;
             }
         }
+        if (!$hasActive) {
+            return false;
+        }
+        $templateMgr->assign('badges', $badges);
+        $templateMgr->assign('pluginurl', $pluginUrl);
+        $templateMgr->assign('pluginBaseUrl', $this->getRequest()->getBaseUrl());
         $output .= $templateMgr->fetch($this->getTemplateResource('block.tpl'));
 
 		return false;
@@ -217,8 +219,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css';
 	}
 
-    function getBadges($submissionID) {
-        $pluginUrl = \Plugin::getPluginPath('generic', 'openbadges');
+    function getBadges($submissionID, $createMissing = false) {
         import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
         $badgeSubmissionDao = new BadgeSubmissionDAO();
         DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
@@ -227,16 +228,16 @@ class OpenBadgesPlugin extends GenericPlugin {
         $badges = $badgeDAO->getAll();
         $result = [];
         while ($badge = $badges->next()) {
-            // Process each badge
-            $badgeSubmission = new BadgeSubmission();
-            if($badgeSubmissionDao->existSubmisionBadge($submissionID, $badge->getId()) == false){
+            $badgeSubmission = $badgeSubmissionDao->getBySubmissionAndBadgeId($submissionID, $badge->getId());
+            if (!$badgeSubmission) {
+                $badgeSubmission = new BadgeSubmission();
                 $badgeSubmission->setBadgeId($badge->getId());
                 $badgeSubmission->setSubmissionId($submissionID);
                 $badgeSubmission->setBadgeUrl("#");
                 $badgeSubmission->setStatus(false);
-                $badgeSubmissionDao->insertObject($badgeSubmission);
-            }else{
-                $badgeSubmission = $badgeSubmissionDao->getBySubmissionAndBadgeId($submissionID, $badge->getId());
+                if ($createMissing) {
+                    $badgeSubmissionDao->insertObject($badgeSubmission);
+                }
             }
             $result[] = [
                 'id' => $badge->getId(),
