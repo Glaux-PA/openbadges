@@ -10,6 +10,7 @@
 {capture assign=actionUrl}{url router=$smarty.const.ROUTE_COMPONENT component="plugins.generic.openbadges.controllers.OpenBadgesHandler" op="updateBadges" submissionId=$submissionId escape=false}{/capture}
 
 <form class="pkpForm pkp_form" method="post" id="badgesForm" action="{$actionUrl}">
+    {csrf}
     <fieldset class="pkpFormGroup -pkpClearfix">
         {foreach from=$badges item=badge}
             <div class="badge-container">

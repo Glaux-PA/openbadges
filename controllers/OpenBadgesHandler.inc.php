@@ -12,6 +12,7 @@
  */
 
 import('lib.pkp.classes.handler.PKPHandler');
+import('lib.pkp.classes.core.JSONMessage');
 
 class OpenBadgesHandler extends Handler{
 	static $plugin;
@@ -69,6 +70,9 @@ class OpenBadgesHandler extends Handler{
 	 * @return string Serialized JSON object
 	 */
 	function updateBadges($args, $request){
+		if (!$request->isPost() || !$request->checkCSRF()) {
+			return new JSONMessage(false, __('form.csrfInvalid'));
+		}
 
 		$submission = $this->getSubmission();
 		$badges = (array) $request->getUserVar('badges');
