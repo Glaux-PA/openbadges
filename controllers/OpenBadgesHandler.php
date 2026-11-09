@@ -15,6 +15,8 @@ namespace APP\plugins\generic\openbadges\controllers;
 
 use APP\core\Application;
 use APP\handler\Handler;
+use APP\plugins\generic\openbadges\classes\BadgeDAO;
+use APP\plugins\generic\openbadges\classes\BadgeSubmission;
 use APP\plugins\generic\openbadges\classes\BadgeSubmissionDAO;
 use PKP\db\DAORegistry;
 use PKP\security\authorization\SubmissionAccessPolicy;
@@ -74,24 +76,44 @@ class OpenBadgesHandler extends Handler
     public function updateBadges($args, $request)
     {
         $submission = $this->getSubmission();
-        $badges = $request->getUserVar('badges');
+        $badges = (array) $request->getUserVar('badges');
 
+        $badgeDao = DAORegistry::getDAO('BadgeDAO');
         $badgeSubmissionDao = DAORegistry::getDAO('BadgeSubmissionDAO');
 
-        foreach ((array) $badges as $badge) {
-            $badgeSubmission = $badgeSubmissionDao->getById((int) ($badge['badgeSubmissionID'] ?? 0));
-            if (!$badgeSubmission || (int) $badgeSubmission->getSubmissionId() !== (int) $submission->getId()) {
+        $catalog = $badgeDao->getAll();
+        while ($badge = $catalog->next()) {
+            if (!isset($badges[$badge->getId()]) || !is_array($badges[$badge->getId()])) {
+                continue;
+            }
+            $data = $badges[$badge->getId()];
+            $badgeSubmission = $badgeSubmissionDao->getBySubmissionAndBadgeId($submission->getId(), $badge->getId());
+
+            if (empty($data['isActive'])) {
+                if ($badgeSubmission) {
+                    $badgeSubmissionDao->deleteById($badgeSubmission->getId());
+                }
                 continue;
             }
 
-            $url = trim((string) ($badge['url'] ?? ''));
+            $url = trim((string) ($data['url'] ?? ''));
             if ($url !== '#' && !preg_match('#^https?://\S+$#i', $url)) {
                 $url = '#';
             }
 
+            if (!$badgeSubmission) {
+                $badgeSubmission = new BadgeSubmission();
+                $badgeSubmission->setBadgeId($badge->getId());
+                $badgeSubmission->setSubmissionId($submission->getId());
+            }
             $badgeSubmission->setBadgeUrl($url);
-            $badgeSubmission->setStatus(!empty($badge['isActive']));
-            $badgeSubmissionDao->updateObject($badgeSubmission);
+            $badgeSubmission->setStatus(true);
+
+            if ($badgeSubmission->getId()) {
+                $badgeSubmissionDao->updateObject($badgeSubmission);
+            } else {
+                $badgeSubmissionDao->insertObject($badgeSubmission);
+            }
         }
 
         $userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);

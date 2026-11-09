@@ -141,7 +141,7 @@ class OpenbadgesPlugin extends GenericPlugin
 
         $smarty->assign([
             'submissionId' => $submission->getId(),
-            'badges' => $this->getBadges($submission->getId(), true),
+            'badges' => $this->getBadges($submission->getId()),
             'pluginurl' => $this->getPluginPath(),
             'pluginBaseUrl' => $request->getBaseUrl(),
         ]);
@@ -222,14 +222,7 @@ class OpenbadgesPlugin extends GenericPlugin
         return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css';
     }
 
-    /**
-     * Get the badges of a submission.
-     *
-     * @param int $submissionID
-     * @param bool $createMissing Create the badge_submission rows that do not exist yet
-     *  (needed by the edit form; public pages only read, they never write).
-     */
-    public function getBadges($submissionID, $createMissing = false): array
+    public function getBadges($submissionID): array
     {
         $badgeSubmissionDao = DAORegistry::getDAO('BadgeSubmissionDAO');
         $badgeDAO = DAORegistry::getDAO('BadgeDAO');
@@ -244,9 +237,6 @@ class OpenbadgesPlugin extends GenericPlugin
                 $badgeSubmission->setSubmissionId($submissionID);
                 $badgeSubmission->setBadgeUrl('#');
                 $badgeSubmission->setStatus(false);
-                if ($createMissing) {
-                    $badgeSubmissionDao->insertObject($badgeSubmission);
-                }
             }
 
             $result[] = [
