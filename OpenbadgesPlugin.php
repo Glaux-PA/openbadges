@@ -74,8 +74,20 @@ class OpenbadgesPlugin extends GenericPlugin
             ['contexts' => 'frontend']
         );
 
+        if ($request->getContext()) {
+            $templateMgr->addJavaScript(
+                'badgeWorkflowConfig',
+                'window.openBadgesPlugin = ' . json_encode($this->getWorkflowConfig($request), JSON_HEX_TAG | JSON_HEX_AMP) . ';',
+                ['contexts' => 'backend', 'inline' => true]
+            );
+            $templateMgr->addJavaScript(
+                'badgeWorkflow',
+                $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/openbadges.js',
+                ['contexts' => 'backend', 'priority' => TemplateManager::STYLE_SEQUENCE_LAST]
+            );
+        }
+
         Hook::add('LoadComponentHandler', [$this, 'setupBadgesHandler']);
-        Hook::add('Template::Workflow::Publication', [$this, 'addToPublicationForms']);
         Hook::add('Templates::Article::Details', [$this, 'addSubmissionDisplay']);
         Hook::add('ArticleHandler::view', [$this, 'addSubmissionDisplayHeaders']);
         Hook::add('Templates::Issue::Issue::Article', [$this, 'addArticleBadges']);
@@ -130,27 +142,45 @@ class OpenbadgesPlugin extends GenericPlugin
     }
 
     /**
-     * Insert badges in the publication tabs
+     * Configuration passed to the workflow script
      */
-    public function addToPublicationForms($hookName, $params)
+    public function getWorkflowConfig($request): array
     {
-        $smarty = & $params[1];
-        $output = & $params[2];
-        $request = Application::get()->getRequest();
-        $submission = $smarty->getTemplateVars('submission');
+        $dispatcher = $request->getDispatcher();
+        $handler = 'plugins.generic.openbadges.controllers.OpenBadgesHandler';
 
-        $smarty->assign([
-            'submissionId' => $submission->getId(),
-            'badges' => $this->getBadges($submission->getId()),
-            'pluginurl' => $this->getPluginPath(),
-            'pluginBaseUrl' => $request->getBaseUrl(),
-        ]);
-        $output .= sprintf(
-            '<tab id="badgesInWorkflow" label="%s">%s</tab>',
-            __('plugins.generic.openbadges.tabName'),
-            $smarty->fetch($this->getTemplateResource('badgesform.tpl'))
-        );
-        return false;
+        return [
+            'getUrl' => $dispatcher->url($request, Application::ROUTE_COMPONENT, null, $handler, 'getBadges'),
+            'updateUrl' => $dispatcher->url($request, Application::ROUTE_COMPONENT, null, $handler, 'updateBadges'),
+            'strings' => [
+                'tabName' => __('plugins.generic.openbadges.tabName'),
+                'activeLabel' => __('plugins.generic.openbadges.activeLabel'),
+                'url' => __('common.url'),
+                'save' => __('common.save'),
+                'saved' => __('form.saved'),
+                'saving' => __('common.saving'),
+                'loading' => __('common.loading'),
+                'error' => __('common.error'),
+                'publication' => __('submission.publication'),
+            ],
+        ];
+    }
+
+    /**
+     * Get the badges of a submission ready for the workflow script
+     */
+    public function getBadgesForWorkflow($submissionId): array
+    {
+        $assetsUrl = Application::get()->getRequest()->getBaseUrl() . '/' . $this->getPluginPath();
+
+        return array_map(fn ($badge) => [
+            'id' => $badge['id'],
+            'title' => __($badge['title']),
+            'description' => __($badge['description']),
+            'image' => $assetsUrl . __($badge['image']),
+            'url' => $badge['url'],
+            'isActive' => (bool) $badge['isActive'],
+        ], $this->getBadges($submissionId));
     }
 
     /**

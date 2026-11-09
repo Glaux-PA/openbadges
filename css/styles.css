@@ -1,49 +1,78 @@
-/* Estilos para el contenedor principal */
-.pkp_form .badge-container {
-    display: flex; /* Usa flexbox para crear un layout de dos columnas */
+.openbadges-panel {
+    background: #fff;
+    padding: 1.5rem 1.5rem 0;
+}
+
+.openbadges-item {
+    display: flex;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #ddd;
 }
-.pkp_form .badge-container:last-of-type {
+
+.openbadges-item:nth-last-child(2) {
     border-bottom: 0;
-    padding-bottom: 0;
-    margin-bottom: 0;
 }
 
-/* Estilos para la columna de la imagen */
-.pkp_form .badge-container .badge-image {
-    margin-right: 2rem; /* Añade un margen entre la imagen y los otros campos */
+.openbadges-image {
+    margin-right: 2rem;
     flex: 0 0 auto;
     max-width: 110px;
 }
 
-.pkp_form .badge-container .badge-details .badge-url input {
-    max-width: 500px;
+.openbadges-image img {
+    max-width: 100%;
 }
 
-.pkp_form .badge-container .badge-details .badge-status {
-    display: flex !important;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    margin-top: .5rem;
+.openbadges-details {
+    flex: 1;
 }
 
-.pkp_form .badge-container .badge-details .badge-status label {
-    margin-left: .25rem;
-    font-weight: normal;
-    font-size: 0.938rem;
-}
-
-.pkp_form .badge-container .badge-details p {
-    font-size: 0.875rem;
-    line-height: 1.3em;
-    margin-top: .5rem;
-}
-
-.pkp_form .badge-container .badge-details h3 {
+.openbadges-details h3 {
     font-size: 1rem;
     line-height: 1.2em;
     margin-bottom: .5rem;
     margin-top: 0;
 }
+
+.openbadges-details p {
+    font-size: 0.875rem;
+    line-height: 1.3em;
+    margin-top: .5rem;
+}
+
+.openbadges-url {
+    display: flex;
+    flex-direction: column;
+}
+
+.openbadges-url input {
+    width: 500px;
+    max-width: 100%;
+}
+
+.openbadges-status {
+    display: flex;
+    align-items: center;
+    margin-top: .5rem;
+}
+
+.openbadges-status label {
+    margin-left: .25rem;
+    font-size: 0.938rem;
+}
+
+.openbadges-error {
+    color: #d00a6c;
+}
+
+.openbadges-url input[type="text"] {
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    padding: .4rem .6rem;
+}
+
+.openbadges-status input[type="checkbox"] {
+    margin: 0;
+}
+

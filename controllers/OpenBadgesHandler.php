@@ -18,6 +18,7 @@ use APP\handler\Handler;
 use APP\plugins\generic\openbadges\classes\BadgeDAO;
 use APP\plugins\generic\openbadges\classes\BadgeSubmission;
 use APP\plugins\generic\openbadges\classes\BadgeSubmissionDAO;
+use PKP\core\JSONMessage;
 use PKP\db\DAORegistry;
 use PKP\security\authorization\SubmissionAccessPolicy;
 use PKP\security\Role;
@@ -34,7 +35,7 @@ class OpenBadgesHandler extends Handler
         parent::__construct();
         $this->addRoleAssignment(
             [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT, Role::ROLE_ID_AUTHOR],
-            ['updateBadges']
+            ['getBadges', 'updateBadges']
         );
     }
 
@@ -68,6 +69,17 @@ class OpenBadgesHandler extends Handler
     }
 
     /**
+     * Get the badges of a submission
+     *
+     * @param array $args
+     * @param \APP\core\Request $request
+     */
+    public function getBadges($args, $request)
+    {
+        return new JSONMessage(true, ['badges' => self::$plugin->getBadgesForWorkflow($this->getSubmission()->getId())]);
+    }
+
+    /**
      * Update the badges of a submission
      *
      * @param array $args
@@ -75,6 +87,10 @@ class OpenBadgesHandler extends Handler
      */
     public function updateBadges($args, $request)
     {
+        if (!$request->isPost() || !$request->checkCSRF()) {
+            return new JSONMessage(false, __('form.csrfInvalid'));
+        }
+
         $submission = $this->getSubmission();
         $badges = (array) $request->getUserVar('badges');
 
@@ -116,36 +132,6 @@ class OpenBadgesHandler extends Handler
             }
         }
 
-        $userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
-        $isEditorial = (bool) array_intersect(
-            [Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT],
-            $userRoles
-        );
-
-        $dispatcher = Application::get()->getDispatcher();
-        $context = $request->getContext();
-        $url = $isEditorial
-            ? $dispatcher->url(
-                $request,
-                Application::ROUTE_PAGE,
-                $context->getPath(),
-                'workflow',
-                'index',
-                [$submission->getId(), 5],
-                null,
-                'publication/badgesInWorkflow'
-            )
-            : $dispatcher->url(
-                $request,
-                Application::ROUTE_PAGE,
-                $context->getPath(),
-                'authorDashboard',
-                'submission',
-                [$submission->getId()],
-                null,
-                'publication/badgesInWorkflow'
-            );
-
-        $request->redirectUrl($url);
+        return new JSONMessage(true, ['badges' => self::$plugin->getBadgesForWorkflow($submission->getId())]);
     }
 }

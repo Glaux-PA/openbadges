@@ -152,7 +152,7 @@ class BadgeDAO extends DAO
         $badge->setBadgeDescription($row['badge_description'], null);
         $badge->setBadgeimage($row['badge_image'], null);
 
-        $this->getDataObjectSettings('badge_settings', 'badge_id', $row['badge_id'], $badge);
+        $this->getDataObjectSettings('badge_settings', 'badge_id', (int) $row['badge_id'], $badge);
 
         return $badge;
     }
@@ -160,7 +160,7 @@ class BadgeDAO extends DAO
     /**
      * Get the additional (non-localized) setting names.
      */
-    public function getAdditionalFieldNames()
+    public function getAdditionalFieldNames(): array
     {
         return ['badge_metadata', 'badge_smallimage'];
     }

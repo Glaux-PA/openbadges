@@ -146,7 +146,7 @@ class BadgeSubmissionDAO extends DAO
         $badgeSubmission->setSubmissionId($row['submission_id']);
         $badgeSubmission->setBadgeUrl($row['badge_url']);
         $badgeSubmission->setStatus((bool) $row['badge_status']);
-        $this->getDataObjectSettings('badge_submission_settings', 'badge_submission_id', $row['badge_submission_id'], $badgeSubmission);
+        $this->getDataObjectSettings('badge_submission_settings', 'badge_submission_id', (int) $row['badge_submission_id'], $badgeSubmission);
         return $badgeSubmission;
     }
 
