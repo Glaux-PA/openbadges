@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openbadges/classes/BadgeSubmision.inc.php
+ * @file plugins/generic/openbadges/classes/BadgeSubmission.php
  *
  * Copyright (c) 2024+ glaux.es
  *
@@ -11,7 +11,12 @@
  * Data object representing a badgeSubmission.
  */
 
-class BadgeSubmission extends DataObject {
+namespace APP\plugins\generic\openbadges\classes;
+
+use PKP\core\DataObject;
+
+class BadgeSubmission extends DataObject
+{
 
     /**
 	 * Get badge ID.

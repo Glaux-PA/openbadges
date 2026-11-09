@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @file plugins/generic/openbadges/classes/Badge.inc.php
+ * @file plugins/generic/openbadges/classes/Badge.php
  *
  * Copyright (c) 2024+ glaux.es
  *
@@ -11,7 +11,12 @@
  * Data object representing a badge.
  */
 
-class Badge extends DataObject {
+namespace APP\plugins\generic\openbadges\classes;
+
+use PKP\core\DataObject;
+
+class Badge extends DataObject
+{
 
     /**
 	 * Get name.

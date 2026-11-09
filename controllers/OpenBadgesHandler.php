@@ -1,0 +1,129 @@
+<?php
+
+/**
+ * @file plugins/generic/openbadges/controllers/OpenBadgesHandler.php
+ *
+ * Copyright (c) 2024+ glaux.es
+ *
+ * @class OpenBadgesHandler
+ * @ingroup plugins_generic_openbadges
+ *
+ * @brief Handle Badge form requests.
+ */
+
+namespace APP\plugins\generic\openbadges\controllers;
+
+use APP\core\Application;
+use APP\handler\Handler;
+use APP\plugins\generic\openbadges\classes\BadgeSubmissionDAO;
+use PKP\db\DAORegistry;
+use PKP\security\authorization\SubmissionAccessPolicy;
+use PKP\security\Role;
+
+class OpenBadgesHandler extends Handler
+{
+    public static $plugin;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->addRoleAssignment(
+            [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT, Role::ROLE_ID_AUTHOR],
+            ['updateBadges']
+        );
+    }
+
+    /**
+     * Set the Badge plugin.
+     *
+     * @param \APP\plugins\generic\openbadges\OpenbadgesPlugin $plugin
+     */
+    public static function setPlugin($plugin)
+    {
+        self::$plugin = $plugin;
+    }
+
+    /**
+     * Get the authorized submission
+     *
+     * @return \APP\submission\Submission
+     */
+    public function getSubmission()
+    {
+        return $this->getAuthorizedContextObject(Application::ASSOC_TYPE_SUBMISSION);
+    }
+
+    /**
+     * @copydoc PKPHandler::authorize()
+     */
+    public function authorize($request, &$args, $roleAssignments)
+    {
+        $this->addPolicy(new SubmissionAccessPolicy($request, $args, $roleAssignments));
+        return parent::authorize($request, $args, $roleAssignments);
+    }
+
+    /**
+     * Update the badges of a submission
+     *
+     * @param array $args
+     * @param \APP\core\Request $request
+     */
+    public function updateBadges($args, $request)
+    {
+        $submission = $this->getSubmission();
+        $badges = $request->getUserVar('badges');
+
+        $badgeSubmissionDao = DAORegistry::getDAO('BadgeSubmissionDAO');
+
+        foreach ((array) $badges as $badge) {
+            $badgeSubmission = $badgeSubmissionDao->getById((int) ($badge['badgeSubmissionID'] ?? 0));
+            if (!$badgeSubmission || (int) $badgeSubmission->getSubmissionId() !== (int) $submission->getId()) {
+                continue;
+            }
+
+            $url = trim((string) ($badge['url'] ?? ''));
+            if ($url !== '#' && !preg_match('#^https?://\S+$#i', $url)) {
+                $url = '#';
+            }
+
+            $badgeSubmission->setBadgeUrl($url);
+            $badgeSubmission->setStatus(!empty($badge['isActive']));
+            $badgeSubmissionDao->updateObject($badgeSubmission);
+        }
+
+        $userRoles = (array) $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES);
+        $isEditorial = (bool) array_intersect(
+            [Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT],
+            $userRoles
+        );
+
+        $dispatcher = Application::get()->getDispatcher();
+        $context = $request->getContext();
+        $url = $isEditorial
+            ? $dispatcher->url(
+                $request,
+                Application::ROUTE_PAGE,
+                $context->getPath(),
+                'workflow',
+                'index',
+                [$submission->getId(), 5],
+                null,
+                'publication/badgesInWorkflow'
+            )
+            : $dispatcher->url(
+                $request,
+                Application::ROUTE_PAGE,
+                $context->getPath(),
+                'authorDashboard',
+                'submission',
+                [$submission->getId()],
+                null,
+                'publication/badgesInWorkflow'
+            );
+
+        $request->redirectUrl($url);
+    }
+}

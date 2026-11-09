@@ -38,3 +38,10 @@ You can also see how a major academic publisher works with its Open Science Badg
 
 ### OJS plugin develop documentation:
 * https://github.com/pkp/staticPages/tree/main
+
+## Installation (OJS 3.4)
+1. Copy this folder to `plugins/generic/openbadges` (the folder name must stay lowercase: OJS 3.4 derives the class name `OpenbadgesPlugin` from it).
+2. Create the database tables with `php lib/pkp/tools/installPluginVersion.php plugins/generic/openbadges/version.xml` (or run the OJS upgrade). If this step is skipped, the plugin creates the tables itself the first time it is enabled.
+3. Enable it in *Settings > Website > Plugins > Generic Plugins*.
+
+The `ojs-3_3_0` branch keeps the OJS 3.3 version of the plugin.

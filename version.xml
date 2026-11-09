@@ -10,8 +10,8 @@
 <version>
     <application>openbadges</application>
     <type>plugins.generic</type>
-    <release>1.0.0.3</release>
-    <date>2025-07-07</date>
+    <release>1.1.0.0</release>
+    <date>2026-11-09</date>
     <lazy-load>1</lazy-load>
-    <class>OpenBadgesPlugin</class>
+    <class>OpenbadgesPlugin</class>
 </version>

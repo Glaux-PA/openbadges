@@ -14,7 +14,7 @@
         {foreach from=$badges item=badge}
             <div class="badge-container">
                 <div class="badge-image">
-                    <img src="{$pluginBaseUrl|escape}/{$pluginurl|escape}{translate key=$badge.image|escape}" alt="Imagen 2 de {$badge.title}">
+                    <img src="{$pluginBaseUrl|escape}/{$pluginurl|escape}{translate key=$badge.image}" alt="{translate key=$badge.title|escape}">
                 </div>
                 <div class="badge-details">
                     <h3>{translate key=$badge.title}</h3>
@@ -22,7 +22,7 @@
 
                     <div class="badge-url">
                         <label for="url_{$badge.badgeSubmissionID}">URL:</label>
-                        <input type="text" name="badges[{$badge.badgeSubmissionID}][url]" pattern="^(#|https?:\/\/.*)$" value="{$badge.url}">
+                        <input type="text" name="badges[{$badge.badgeSubmissionID}][url]" pattern="^(#|https?:\/\/.*)$" value="{$badge.url|escape}">
                     </div>
                     <div class="badge-status">
                         <label for="active_{$badge.badgeSubmissionID}">{translate key="plugins.generic.openbadges.activeLabel"}</label>
