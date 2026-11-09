@@ -21,22 +21,16 @@
                     <p>{translate key=$badge.description}</p>
 
                     <div class="badge-url">
-                        <label for="url_{$badge.badgeSubmissionID}">URL:</label>
-                        <input type="text" name="badges[{$badge.badgeSubmissionID}][url]" pattern="^(#|https?:\/\/.*)$" value="{$badge.url|escape}">
+                        <label for="url_{$badge.id}">URL:</label>
+                        <input type="text" name="badges[{$badge.id}][url]" id="url_{$badge.id}" pattern="^(#|https?:\/\/.*)$" value="{$badge.url|escape}">
                     </div>
                     <div class="badge-status">
-                        <label for="active_{$badge.badgeSubmissionID}">{translate key="plugins.generic.openbadges.activeLabel"}</label>
+                        <label for="active_{$badge.id}">{translate key="plugins.generic.openbadges.activeLabel"}</label>
                         {assign var="isActive" value=$badge.isActive|default:false}
-                        <input type="checkbox" name="badges[{$badge.badgeSubmissionID}][isActive]"
-                            id="active_{$badge.badgeSubmissionID}"
+                        <input type="checkbox" name="badges[{$badge.id}][isActive]"
+                            id="active_{$badge.id}"
                             {if $isActive == true || $isActive === 1}checked{/if}>
                     </div>
-                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][title]" value="{$badge.title}">
-                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][description]"
-                        value="{$badge.description}">
-                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][image]" value="{$badge.image}">
-                    <input type="hidden" name="badges[{$badge.badgeSubmissionID}][badgeSubmissionID]"
-                        value="{$badge.badgeSubmissionID}">
                 </div>
             </div>
         {/foreach}

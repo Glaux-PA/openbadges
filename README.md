@@ -38,3 +38,5 @@ You can also see how a major academic publisher works with its Open Science Badg
 
 ### OJS plugin develop documentation:
 * https://github.com/pkp/staticPages/tree/main
+
+Only the badges awarded to an article are stored: a row is saved when a badge is activated and removed when it is deactivated.

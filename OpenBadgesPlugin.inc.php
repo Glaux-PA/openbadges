@@ -125,7 +125,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 			'submissionId' => $submission->getId(),
 		]);
         //Retrieve badges for this publication
-        $badges = $this->getBadges($submission->getId(), true);
+        $badges = $this->getBadges($submission->getId());
         $smarty->assign('badges', $badges);
         $smarty->assign('pluginurl', $pluginUrl);
         $smarty->assign('pluginBaseUrl', $this->getRequest()->getBaseUrl());
@@ -219,7 +219,7 @@ class OpenBadgesPlugin extends GenericPlugin {
 		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css';
 	}
 
-    function getBadges($submissionID, $createMissing = false) {
+    function getBadges($submissionID) {
         import('plugins.generic.openbadges.classes.BadgeSubmissionDAO');
         $badgeSubmissionDao = new BadgeSubmissionDAO();
         DAORegistry::registerDAO('BadgeSubmissionDAO', $badgeSubmissionDao);
@@ -235,9 +235,6 @@ class OpenBadgesPlugin extends GenericPlugin {
                 $badgeSubmission->setSubmissionId($submissionID);
                 $badgeSubmission->setBadgeUrl("#");
                 $badgeSubmission->setStatus(false);
-                if ($createMissing) {
-                    $badgeSubmissionDao->insertObject($badgeSubmission);
-                }
             }
             $result[] = [
                 'id' => $badge->getId(),
