@@ -6,7 +6,7 @@ msgstr ""
 "PO-Revision-Date: 2024-04-09 15:32+0000\n"
 "Last-Translator: PublicacionesAcademicas <info@publicacionesacademicas.es>\n"
 "Language-Team: Spanish <http://translate.pkp.sfu.ca/projects/ojs/"
-"Language: en_US\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,12 +17,6 @@ msgstr "Open Science Badges"
 
 msgid "plugins.generic.openbadges.description"
 msgstr "Plugin to display open science badges"
-
-msgid "plugins.generic.openbadges.settings"
-msgstr "Configuration"
-
-msgid "plugins.generic.openbadges.instructions"
-msgstr "Select the badge to apply"
 
 msgid "plugins.generic.openbadges.tabName"
 msgstr "Badges"
