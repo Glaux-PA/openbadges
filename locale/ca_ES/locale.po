@@ -18,12 +18,6 @@ msgstr "Insígnies Ciència Oberta"
 msgid "plugins.generic.openbadges.description"
 msgstr "Plugin per a mostrar les insígnies de ciència oberta"
 
-msgid "plugins.generic.openbadges.settings"
-msgstr "Configuració"
-
-msgid "plugins.generic.openbadges.instructions"
-msgstr "Seleccionar la insígnia a aplicar"
-
 msgid "plugins.generic.openbadges.tabName"
 msgstr "Insígnies"
 

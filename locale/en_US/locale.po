@@ -18,12 +18,6 @@ msgstr "Open Science Badges"
 msgid "plugins.generic.openbadges.description"
 msgstr "Plugin to display open science badges"
 
-msgid "plugins.generic.openbadges.settings"
-msgstr "Configuration"
-
-msgid "plugins.generic.openbadges.instructions"
-msgstr "Select the badge to apply"
-
 msgid "plugins.generic.openbadges.tabName"
 msgstr "Badges"
 

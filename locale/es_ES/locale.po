@@ -18,12 +18,6 @@ msgstr "Insignias Ciencia Abierta"
 msgid "plugins.generic.openbadges.description"
 msgstr "Plugin para mostrar las insignias de ciencia abierta"
 
-msgid "plugins.generic.openbadges.settings"
-msgstr "Configuración"
-
-msgid "plugins.generic.openbadges.instructions"
-msgstr "Seleccionar la insignia a aplicar"
-
 msgid "plugins.generic.openbadges.tabName"
 msgstr "Insignias"
 

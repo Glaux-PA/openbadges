@@ -4,6 +4,7 @@
  * @file plugins/generic/openbadges/OpenBadgesPlugin.inc.php
  *
  * Copyright (c) 2024+ glaux.es
+ * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class OpenBadgesPlugin
  * @ingroup plugins_generic_openbadges
