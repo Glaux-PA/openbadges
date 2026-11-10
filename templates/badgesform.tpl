@@ -1,8 +1,8 @@
 {**
- * templates/index.tpl
+ * plugins/generic/openbadges/templates/badgesform.tpl
  *
- * Copyright (c) 2024+ publicacionesacademicas.es
- * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
+ * Copyright (c) 2024+ glaux.es
+ * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * Badges form for Insignias Ciencia Abierta plugin.
  *}
